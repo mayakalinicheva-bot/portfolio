@@ -17,7 +17,7 @@ export function authorized(request) {
 }
 
 export function unavailable() {
-  return !process.env.DISCOVERY_SYNC_KEY || !(process.env.BLOB_READ_WRITE_TOKEN || (process.env.VERCEL_OIDC_TOKEN && process.env.BLOB_STORE_ID));
+  return !process.env.DISCOVERY_SYNC_KEY || !(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 }
 
 export async function read(path) {
