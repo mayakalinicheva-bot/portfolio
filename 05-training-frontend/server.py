@@ -99,6 +99,12 @@ class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
+    def guess_type(self, path):
+        content_type = super().guess_type(path)
+        if content_type.startswith(("text/", "application/javascript")):
+            return content_type + "; charset=utf-8"
+        return content_type
+
     def json_response(self, status, data):
         payload = json.dumps(data, ensure_ascii=False).encode("utf-8")
         self.send_response(status)

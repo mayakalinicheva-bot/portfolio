@@ -1,0 +1,73 @@
+openapi: 3.1.0
+info:
+  title: portfolio Discovery bridge
+  version: 0.2.0
+  description: Read the current Discovery workspace and submit reviewable product proposals.
+servers:
+  - url: https://portfolio-discovery.vercel.app
+security:
+  - discoveryKey: []
+paths:
+  /api/gpt:
+    get:
+      operationId: getDiscoveryContext
+      summary: Read current Project Scope, hypotheses, entities, decisions, requirements and pending proposals
+      responses:
+        '200':
+          description: Discovery context
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  context:
+                    type: object
+                    additionalProperties: true
+                  proposals:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+        '401':
+          description: Missing or invalid key
+    post:
+      operationId: submitDiscoveryProposal
+      summary: Add one filtered proposal to the review inbox without changing accepted records
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type, title, body, sourceChat]
+              properties:
+                type:
+                  type: string
+                  enum: [document, hypothesis, research, decision, entity, requirement, task]
+                title:
+                  type: string
+                  minLength: 5
+                body:
+                  type: string
+                  minLength: 15
+                sourceChat:
+                  type: string
+                  description: Chat title or share link supplied by the user, without private transcript text.
+                targetRef:
+                  type: string
+                  description: Existing reference such as documents:source-01-discovery--project-scope.
+                basis:
+                  type: string
+                  description: Evidence or explicit user decision supporting this proposal.
+      responses:
+        '201':
+          description: Proposal accepted into review inbox
+        '400':
+          description: Validation error
+        '401':
+          description: Missing or invalid key
+components:
+  securitySchemes:
+    discoveryKey:
+      type: http
+      scheme: bearer
