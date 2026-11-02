@@ -1,0 +1,9 @@
+{
+  "name": "portfolio-discovery-workspace",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "dependencies": {
+    "@vercel/blob": "2.8.2"
+  }
+}
