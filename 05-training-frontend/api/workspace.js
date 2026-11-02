@@ -10,8 +10,8 @@ function valid(state) {
 }
 
 async function handler(request) {
-  if (unavailable()) return json({ error: 'Облачная синхронизация ещё не настроена' }, 503);
   if (!authorized(request)) return json({ error: 'Неверный ключ синхронизации' }, 401);
+  if (unavailable()) return json({ error: 'Облачная синхронизация ещё не настроена' }, 503);
   if (!['GET', 'POST'].includes(request.method)) return json({ error: 'Метод не поддерживается' }, 405);
   try {
     const current = await read('discovery/workspace-v2.json');
