@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import re
 import tempfile
 import threading
 from datetime import datetime, timezone
@@ -12,11 +13,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "workspace"
 STATE = DATA / "discovery.json"
+INTERVIEWS_STATE = DATA / "research-interviews.json"
 REPORT = ROOT / "reports" / "discovery-report.md"
 LOCK = threading.Lock()
 COLLECTIONS = ("documents", "hypotheses", "research", "decisions", "entities", "tasks", "matrix")
 TITLES = {"documents": "Документы", "hypotheses": "Гипотезы", "research": "Исследования", "decisions": "Решения", "entities": "Сущности", "tasks": "Задачи", "matrix": "Требования"}
 FIELDS = {"description": "Описание", "body": "Содержание", "assumption": "Предположение", "audience": "Аудитория", "experiment": "Способ проверки", "criterion": "Критерий успеха", "evidence": "Свидетельства", "conclusion": "Вывод", "question": "Вопрос исследования", "method": "Метод", "findings": "Наблюдения", "next": "Следующий шаг", "rationale": "Основание решения", "alternatives": "Альтернативы", "consequences": "Последствия", "owner": "Ответственный", "due": "Срок", "source": "Источник", "category": "Раздел", "blocks": "Блоки матрицы", "links": "Связанные материалы", "status": "Статус", "A": "ID", "B": "Блок", "C": "Элемент / функция", "D": "Роль", "E": "Сценарий / триггер", "F": "Требование / поведение", "G": "UI / состояние", "H": "Данные / зависимости", "I": "Метрики", "J": "Edge cases", "K": "Corner cases", "L": "Восстановление / выход", "M": "Критерии приёмки", "N": "Статус решения", "O": "MVP", "P": "Открытые вопросы"}
+DIRECT_IDENTIFIER_PATTERNS = (
+    re.compile(r"\b[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}\b"),
+    re.compile(r"(?<!\d)(?:\+7|8)[\s()\-]*\d{3}[\s()\-]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}(?!\d)"),
+    re.compile(r"(?<!\w)@[A-Za-z0-9_]{3,}\b"),
+    re.compile(r"https?://\S+", re.I),
+    re.compile(r"\b(?:меня\s+зовут|м[оё]е?\s+имя|фамилия)\b", re.I),
+)
 
 def atomic_write(path, text):
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -59,6 +68,47 @@ def validate(state):
         raise ValueError("Некорректные данные CRUD")
     if not isinstance(state.get("reportItems"), list) or not all(isinstance(x, str) for x in state["reportItems"]):
         raise ValueError("Некорректный состав отчёта")
+
+def validate_interviews(data):
+    if not isinstance(data, dict) or data.get("schemaVersion") != 1:
+        raise ValueError("Неподдерживаемый формат интервью")
+    source = data.get("source")
+    guide = data.get("guide")
+    interviews = data.get("interviews")
+    if not isinstance(source, dict) or not all(isinstance(source.get(key), str) and source[key].strip() for key in ("documentId", "revisionId", "title")):
+        raise ValueError("Некорректный источник интервью")
+    if not isinstance(guide, dict) or not isinstance(guide.get("blocks"), list) or len(guide["blocks"]) != 12 or not isinstance(guide.get("questions"), list) or len(guide["questions"]) != 120:
+        raise ValueError("Ожидаются 12 блоков и 120 вопросов")
+    for index, block in enumerate(guide["blocks"]):
+        number = index + 1
+        expected_ids = [f"Q{item:03d}" for item in range(index * 10 + 1, index * 10 + 11)]
+        if not isinstance(block, dict) or block.get("id") != f"B{number:02d}" or block.get("number") != number or not isinstance(block.get("title"), str) or block.get("questionIds") != expected_ids:
+            raise ValueError("Некорректный блок интервью")
+    for index, question in enumerate(guide["questions"]):
+        number = index + 1
+        if not isinstance(question, dict) or question.get("id") != f"Q{number:03d}" or question.get("number") != number or question.get("blockId") != f"B{index // 10 + 1:02d}" or not isinstance(question.get("text"), str) or not question["text"].strip():
+            raise ValueError("Некорректный вопрос интервью")
+    if not isinstance(interviews, list) or not 1 <= len(interviews) <= 100:
+        raise ValueError("Некорректный список интервью")
+    respondents = set()
+    for interview in interviews:
+        respondent_id = interview.get("respondentId") if isinstance(interview, dict) else None
+        answers = interview.get("answers") if isinstance(interview, dict) else None
+        if not isinstance(respondent_id, str) or not re.fullmatch(r"R\d{2}", respondent_id) or respondent_id in respondents or not isinstance(answers, list) or len(answers) != 120:
+            raise ValueError("Некорректная запись респондента")
+        respondents.add(respondent_id)
+        numbers = set()
+        for answer in answers:
+            number = answer.get("questionNumber") if isinstance(answer, dict) else None
+            if not isinstance(number, int) or not 1 <= number <= 120 or number in numbers:
+                raise ValueError("Пропущенный или повторный номер ответа")
+            numbers.add(number)
+            question_id = f"Q{number:03d}"
+            if answer.get("questionId") != question_id or answer.get("id") != f"{respondent_id}-{question_id}" or not isinstance(answer.get("answer"), str) or not answer["answer"].strip():
+                raise ValueError("Некорректная пара вопрос–ответ")
+    serialized = json.dumps(data, ensure_ascii=False)
+    if any(pattern.search(serialized) for pattern in DIRECT_IDENTIFIER_PATTERNS):
+        raise ValueError("Обнаружен возможный прямой идентификатор")
 
 def report_markdown(state):
     lines = ["# portfolio — основной отчёт Discovery", "", "Составляется из материалов, выбранных в рабочем пространстве. Статусы и основания сохраняются без автоматического согласования.", ""]
@@ -129,6 +179,14 @@ class Handler(SimpleHTTPRequestHandler):
                     return self.json_response(200, json.loads(STATE.read_text(encoding="utf-8")))
                 except (OSError, ValueError):
                     return self.json_response(500, {"error": "Не удалось прочитать рабочее пространство. Исходный файл сохранён."})
+        if path == "/api/research-interviews":
+            with LOCK:
+                if not INTERVIEWS_STATE.exists():
+                    return self.json_response(200, {"revision": 0, "savedAt": None, "data": None})
+                try:
+                    return self.json_response(200, json.loads(INTERVIEWS_STATE.read_text(encoding="utf-8")))
+                except (OSError, ValueError):
+                    return self.json_response(500, {"error": "Не удалось прочитать интервью. Исходный файл сохранён."})
         if path == "/api/report":
             with LOCK:
                 if not STATE.exists():
@@ -149,7 +207,7 @@ class Handler(SimpleHTTPRequestHandler):
         expected_origin = "http://" + self.headers.get("Host", "")
         if not self.allowed_host() or self.headers.get("Origin", expected_origin) != expected_origin:
             return self.json_response(403, {"error": "Запись разрешена только из локального приложения"})
-        if self.path != "/api/workspace":
+        if self.path not in ("/api/workspace", "/api/research-interviews"):
             return self.json_response(404, {"error": "Неизвестный API"})
         try:
             length = int(self.headers.get("Content-Length", "0"))
@@ -158,6 +216,21 @@ class Handler(SimpleHTTPRequestHandler):
             if self.headers.get("Content-Type", "").split(";")[0] != "application/json":
                 raise ValueError("Ожидается JSON")
             request = json.loads(self.rfile.read(length))
+            if self.path == "/api/research-interviews":
+                data = request.get("data")
+                validate_interviews(data)
+                with LOCK:
+                    previous = INTERVIEWS_STATE.read_text(encoding="utf-8") if INTERVIEWS_STATE.exists() else None
+                    current = json.loads(previous) if previous else {"revision": 0}
+                    if current.get("data") == data:
+                        return self.json_response(200, {"revision": current["revision"], "savedAt": current.get("savedAt"), "unchanged": True})
+                    if request.get("revision") != current["revision"]:
+                        return self.json_response(409, {"error": "На диске есть более новая версия интервью.", "revision": current["revision"]})
+                    result = {"revision": current["revision"] + 1, "savedAt": datetime.now(timezone.utc).isoformat(), "data": data}
+                    if previous:
+                        atomic_write(DATA / "research-interviews.previous.json", previous)
+                    atomic_write(INTERVIEWS_STATE, json.dumps(result, ensure_ascii=False, indent=2))
+                return self.json_response(200, {"revision": result["revision"], "savedAt": result["savedAt"]})
             state = request.get("state")
             validate(state)
             with LOCK:

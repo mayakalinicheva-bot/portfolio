@@ -29,6 +29,52 @@ const tools = [
     annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     _meta: { securitySchemes: [{ type: 'oauth2', scopes: ['discovery:write'] }] },
   },
+  {
+    name: 'get_research_interviews',
+    title: 'List depth interviews',
+    description: 'Read the anonymized depth-interview inventory and integrity counts. This is raw research evidence, separate from Discovery proposals.',
+    inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+    annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+    _meta: { securitySchemes: [{ type: 'oauth2', scopes: ['discovery:read'] }] },
+  },
+  {
+    name: 'get_research_interview',
+    title: 'Read one depth interview',
+    description: 'Read one anonymized respondent interview with its canonical questions and structured answers.',
+    inputSchema: {
+      type: 'object',
+      required: ['respondentId'],
+      properties: { respondentId: { type: 'string', pattern: '^R\\d{2}$', description: 'Anonymized respondent ID, for example R01.' } },
+      additionalProperties: false,
+    },
+    annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+    _meta: { securitySchemes: [{ type: 'oauth2', scopes: ['discovery:read'] }] },
+  },
+  {
+    name: 'import_research_interviews',
+    title: 'Import structured depth interviews',
+    description: 'Atomically import a validated anonymized question guide and respondent answers into the dedicated research-evidence store. Never use this for interpreted findings or proposals.',
+    inputSchema: {
+      type: 'object',
+      required: ['revision', 'data'],
+      properties: {
+        revision: { type: 'integer', minimum: 0, description: 'Current research-interview revision. Use get_research_interviews first.' },
+        data: {
+          type: 'object',
+          required: ['schemaVersion', 'source', 'guide', 'interviews'],
+          properties: {
+            schemaVersion: { type: 'integer', const: 1 },
+            source: { type: 'object' },
+            guide: { type: 'object' },
+            interviews: { type: 'array', minItems: 1, maxItems: 100, items: { type: 'object' } },
+          },
+        },
+      },
+      additionalProperties: false,
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    _meta: { securitySchemes: [{ type: 'oauth2', scopes: ['discovery:write'] }] },
+  },
 ];
 
 const rpc = (id, result) => oauthJson({ jsonrpc: '2.0', id, result });
@@ -51,10 +97,18 @@ async function internal(method, body) {
   });
 }
 
+async function researchInternal(method, body, query = '') {
+  return fetch(`${ORIGIN}/api/research-interviews${query}`, {
+    method,
+    headers: { authorization: `Bearer ${process.env.DISCOVERY_SYNC_KEY || ''}`, ...(body ? { 'content-type': 'application/json' } : {}) },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+}
+
 export async function POST(request) {
   try {
     const raw = await request.text();
-    if (raw.length > 32000) return rpcError(null, -32600, 'Request too large');
+    if (raw.length > 4_000_000) return rpcError(null, -32600, 'Request too large');
     const input = JSON.parse(raw);
     if (!input || input.jsonrpc !== '2.0' || typeof input.method !== 'string') return rpcError(input?.id ?? null, -32600, 'Invalid request');
     const { id, method, params = {} } = input;
@@ -72,6 +126,27 @@ export async function POST(request) {
     if (params.name === 'submit_discovery_proposal') {
       if (!access(request, 'discovery:write')) return authResult(id, 'discovery:write');
       const result = await internal('POST', params.arguments || {});
+      return toolResult(id, await result.json(), !result.ok);
+    }
+    if (params.name === 'get_research_interviews') {
+      if (!access(request, 'discovery:read')) return authResult(id, 'discovery:read');
+      const result = await researchInternal('GET', null, '?summary=1');
+      return toolResult(id, await result.json(), !result.ok);
+    }
+    if (params.name === 'get_research_interview') {
+      if (!access(request, 'discovery:read')) return authResult(id, 'discovery:read');
+      const respondentId = params.arguments?.respondentId;
+      if (typeof respondentId !== 'string' || !/^R\d{2}$/.test(respondentId)) return toolResult(id, { error: 'Некорректный ID респондента' }, true);
+      const result = await researchInternal('GET');
+      const payload = await result.json();
+      if (!result.ok) return toolResult(id, payload, true);
+      const interview = payload.data?.interviews?.find(item => item.respondentId === respondentId);
+      if (!interview) return toolResult(id, { error: 'Интервью не найдено' }, true);
+      return toolResult(id, { revision: payload.revision, savedAt: payload.savedAt, source: payload.data.source, guide: payload.data.guide, interview });
+    }
+    if (params.name === 'import_research_interviews') {
+      if (!access(request, 'discovery:write')) return authResult(id, 'discovery:write');
+      const result = await researchInternal('POST', params.arguments || {});
       return toolResult(id, await result.json(), !result.ok);
     }
     return rpcError(id, -32602, 'Unknown tool');
