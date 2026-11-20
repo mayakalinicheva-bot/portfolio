@@ -7,7 +7,7 @@ const paths={home:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y
 function icon(name){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[name]||paths.file)+'</svg>'}
 const extras={home:'Обзор',researchHub:'Исследования',researchPlan:'Research Plan',researchInterviews:'Глубинные интервью',researchSurveys:'Количественные опросы',researchAnalysis:'Результаты и аналитика',crud:'CRUD по ролям',report:'Основной отчёт',archive:'Архив',sync:'ChatGPT и облако'};
 let state,seedState,revision=0,server=false,cloud=false,cloudToken='',proposals=[],dirty=false,generation=0,saving=false,blocked=false,saveTimer,toastTimer,preview=false;
-let interviewStore=null,interviewRevision=0,interviewLoading=false,interviewError='';
+let interviewStore=null,interviewSummary=null,interviewRevision=0,interviewLoading=false,interviewSummaryLoading=false,interviewError='';
 let route={kind:'home',id:'',params:new URLSearchParams()},previousHash='',scrollPositions=new Map();
 const colors=['purple','mint','blue','peach'];
 const titleFor=kind=>M.config[kind]?.title||extras[kind]||'Обзор';
@@ -34,9 +34,10 @@ function textPreview(row){return (row.description||row.assumption||row.question|
 
 function storageRead(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch{return null}}
 async function cloudRequest(path,options={}){const response=await fetch(path,{...options,headers:{Authorization:'Bearer '+cloudToken,...options.headers}});const result=await response.json();if(!response.ok){const error=Error(result.error||'Ошибка облака');error.status=response.status;throw error}return result}
-async function interviewRequest(){
-  if(cloud)return cloudRequest('/api/research-interviews');
-  if(server){const response=await fetch('/api/research-interviews');const result=await response.json();if(!response.ok)throw Error(result.error||'Не удалось загрузить интервью');return result;}
+async function interviewRequest(summary=false){
+  const path='/api/research-interviews'+(summary?'?summary=1':'');
+  if(cloud)return cloudRequest(path);
+  if(server){const response=await fetch(path);const result=await response.json();if(!response.ok)throw Error(result.error||'Не удалось загрузить интервью');return result;}
   throw Error('Подключи закрытое облако, чтобы открыть обезличенные интервью.');
 }
 async function importInterviewData(data){
@@ -47,17 +48,25 @@ async function importInterviewData(data){
   if(cloud)result=await cloudRequest('/api/research-interviews',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   else if(server){const response=await fetch('/api/research-interviews',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});result=await response.json();if(!response.ok){const error=Error(result.error||'Импорт не выполнен');error.status=response.status;throw error;}}
   else throw Error('Подключи закрытое облако перед импортом.');
-  interviewStore=data;interviewRevision=result.revision;interviewError='';render();toast(result.unchanged?'Набор уже был импортирован':'Импортировано 8 интервью · 960 ответов');
+  interviewStore=data;interviewSummary={revision:result.revision,interviewCount:data.interviews.length,blockCount:data.guide.blocks.length,questionCount:data.guide.questions.length,answerCount:data.interviews.reduce((total,item)=>total+(item.answers?.length||0),0)};interviewRevision=result.revision;interviewError='';render();toast(result.unchanged?'Набор уже был импортирован':'Импортировано 8 интервью · 960 ответов');
 }
 function chooseInterviewImport(){
   const input=document.createElement('input');input.type='file';input.accept='application/json,.json';input.hidden=true;document.body.append(input);
   input.addEventListener('change',async()=>{try{const file=input.files[0];if(!file)return;if(file.size>4_000_000)throw Error('Файл больше 4 МБ');const parsed=JSON.parse(await file.text());await importInterviewData(parsed.data||parsed);}catch(error){toast('Импорт не выполнен: '+error.message)}finally{input.remove();}});
   input.click();
 }
+async function ensureInterviewSummary(force=false){
+  if(interviewSummaryLoading||(!force&&interviewSummary))return;
+  if(!server&&!cloud)return;
+  interviewSummaryLoading=true;
+  try{interviewSummary=await interviewRequest(true);interviewRevision=interviewSummary.revision||0;}
+  catch(error){interviewSummary=null;}
+  finally{interviewSummaryLoading=false;if(route.kind==='researchHub')render();}
+}
 async function ensureInterviewData(force=false){
   if(interviewLoading||(!force&&interviewStore))return;
   interviewLoading=true;interviewError='';if(route.kind==='researchInterviews')render();
-  try{const result=await interviewRequest();interviewStore=result.data||null;interviewRevision=result.revision||0;if(!interviewStore)interviewError='Набор интервью ещё не импортирован в закрытое хранилище.';}
+  try{const result=await interviewRequest();interviewStore=result.data||null;interviewRevision=result.revision||0;if(interviewStore)interviewSummary={revision:result.revision,interviewCount:interviewStore.interviews?.length||0,blockCount:interviewStore.guide?.blocks?.length||0,questionCount:interviewStore.guide?.questions?.length||0,answerCount:(interviewStore.interviews||[]).reduce((total,item)=>total+(item.answers?.length||0),0)};if(!interviewStore)interviewError='Набор интервью ещё не импортирован в закрытое хранилище.';}
   catch(error){interviewStore=null;interviewError=error.message;}
   finally{interviewLoading=false;if(route.kind==='researchInterviews')render();}
 }
@@ -89,8 +98,8 @@ function render(){if(!state)return;route=parseRoute();nav();breadcrumbs();let ht
 
 function findResearchPlan(){return state.documents.find(d=>d.id===M.researchPlan.id||d.title.trim().toLocaleLowerCase('ru-RU')===M.researchPlan.title.toLocaleLowerCase('ru-RU'))}
 function researchHubView(){
-  const plan=findResearchPlan(),interviews=interviewStore?.interviews?.length??alive('research').filter(r=>r.format==='Глубинное интервью').length,surveys=alive('research').filter(r=>r.format==='Количественный опрос').length,hypotheses=alive('hypotheses').length,analysis=alive('documents').filter(d=>d.category==='Результаты и аналитика').length;
-  const items=[['researchPlan','Research Plan','Согласованная методика и 18 решений.',plan?'Документ сохранён в Discovery':'Утверждённый документ · v1.0'],['researchInterviews','Глубинные интервью','Студенты, преподаватели и внешняя сравнительная группа.',interviews+' записей'],['researchSurveys','Количественные опросы','Анкеты и материалы опросов студентов и преподавателей.',surveys+' записей'],['hypotheses','Гипотезы и доказательства','Единый существующий реестр гипотез и связанных свидетельств.',hypotheses+' гипотез'],['researchAnalysis','Результаты и аналитика','Документы с выводами, таблицами и итоговыми отчётами.',analysis+' материалов']];
+  const plan=findResearchPlan(),interviews=interviewSummary?.interviewCount??interviewStore?.interviews?.length??alive('research').filter(r=>r.format==='Глубинное интервью').length,answers=interviewSummary?.answerCount??(interviewStore?.interviews||[]).reduce((total,item)=>total+(item.answers?.length||0),0),surveys=alive('research').filter(r=>r.format==='Количественный опрос').length,hypotheses=alive('hypotheses').length,analysis=alive('documents').filter(d=>d.category==='Результаты и аналитика').length;
+  const items=[['researchPlan','Research Plan','Согласованная методика и 18 решений.',plan?'Документ сохранён в Discovery':'Утверждённый документ · v1.0'],['researchInterviews','Глубинные интервью','Студенты, преподаватели и внешняя сравнительная группа.',interviews+' интервью'+(answers?' · '+answers+' ответов':'')],['researchSurveys','Количественные опросы','Анкеты и материалы опросов студентов и преподавателей.',surveys+' записей'],['hypotheses','Гипотезы и доказательства','Единый существующий реестр гипотез и связанных свидетельств.',hypotheses+' гипотез'],['researchAnalysis','Результаты и аналитика','Документы с выводами, таблицами и итоговыми отчётами.',analysis+' материалов']];
   return heading('Исследования','Планы, сбор данных и выводы Portfolio — в одном рабочем разделе.',button('Все записи исследований','open-research','quiet'),'PORTFOLIO / RESEARCH')+'<div class="research-intro"><span class="research-intro-mark">R</span><div><span class="eyebrow">DISCOVERY / RESEARCH</span><h2>От исследовательского вопроса к обоснованному решению</h2><p>Исследовательские материалы ведутся отдельно от требований и решений продукта. Новые данные появятся здесь только после добавления владельцем.</p></div></div><div class="research-grid">'+items.map(([kind,title,desc,count])=>'<a class="card research-tile" href="'+uri(kind)+'"><span class="research-tile-icon">'+icon(kind==='researchPlan'?'file':kind==='hypotheses'?'bulb':kind==='researchAnalysis'?'report':'search')+'</span><span class="eyebrow">'+(kind==='researchPlan'?'МЕТОДОЛОГИЯ':kind==='researchAnalysis'?'ОТЧЁТНОСТЬ':'СБОР И АНАЛИЗ')+'</span><h2>'+esc(title)+'</h2><p>'+esc(desc)+'</p><span class="research-tile-meta">'+esc(count)+' '+icon('arrow')+'</span></a>').join('')+'</div>';
 }
 function researchPlanView(){
@@ -224,8 +233,8 @@ function syncView(){
 }
 
 function connectDialog(){if(['localhost','127.0.0.1'].includes(location.hostname)){toast('Подключи облако на опубликованном сайте');return}modal('Подключить облако','<p class="dialog-note">Введи ключ рабочего пространства. Он передаётся только на этот сайт для доступа к закрытой копии. Тот же ключ потребуется при подключении личного Plugin через страницу авторизации этого сайта.</p><div class="field"><label for="syncToken">Ключ синхронизации</label><input id="syncToken" type="password" autocomplete="off" placeholder="Ключ из настроек Vercel"></div><label class="sync-remember"><input id="syncRemember" type="checkbox"> Запомнить ключ в этом браузере</label><div class="dialog-footer"><button class="button" data-action="close">Отмена</button><button class="button primary" id="syncConfirm">Подключить</button></div>');$('#syncConfirm').onclick=connectCloud}
-async function connectCloud(){const token=$('#syncToken').value.trim();if(!token){toast('Введи ключ синхронизации');return}const old=cloudToken;cloudToken=token;try{const remote=await cloudRequest('/api/workspace');if(remote.state){exportState();state=M.validate(remote.state);revision=remote.revision;dirty=false;blocked=false;}else{revision=0;dirty=true;blocked=false;}cloud=true;sessionStorage.setItem(SYNC_KEY,token);if($('#syncRemember').checked)localStorage.setItem(SYNC_KEY,token);$('#storageDescription').textContent='Автосохранение в закрытом облаке\nи копия в браузере';closeDialog();backup();render();if(dirty)await flush();await loadProposals();if(route.kind==='researchInterviews')await ensureInterviewData(true);toast('Облако подключено')}catch(error){cloudToken=old;cloud=false;toast(error.message)}}
-function disconnectCloud(){cloud=false;cloudToken='';revision=0;blocked=false;dirty=false;interviewStore=null;interviewRevision=0;interviewError='';sessionStorage.removeItem(SYNC_KEY);localStorage.removeItem(SYNC_KEY);$('#storageDescription').textContent='Сохранение в этом браузере. Облако подключается в разделе «ChatGPT и облако».';backup();render();toast('Облако отключено; рабочая копия осталась в браузере')}
+async function connectCloud(){const token=$('#syncToken').value.trim();if(!token){toast('Введи ключ синхронизации');return}const old=cloudToken;cloudToken=token;try{const remote=await cloudRequest('/api/workspace');if(remote.state){exportState();state=M.validate(remote.state);revision=remote.revision;dirty=false;blocked=false;}else{revision=0;dirty=true;blocked=false;}cloud=true;sessionStorage.setItem(SYNC_KEY,token);if($('#syncRemember').checked)localStorage.setItem(SYNC_KEY,token);$('#storageDescription').textContent='Автосохранение в закрытом облаке\nи копия в браузере';closeDialog();backup();render();if(dirty)await flush();await loadProposals();if(route.kind==='researchInterviews')await ensureInterviewData(true);if(route.kind==='researchHub')await ensureInterviewSummary(true);toast('Облако подключено')}catch(error){cloudToken=old;cloud=false;toast(error.message)}}
+function disconnectCloud(){cloud=false;cloudToken='';revision=0;blocked=false;dirty=false;interviewStore=null;interviewSummary=null;interviewRevision=0;interviewError='';sessionStorage.removeItem(SYNC_KEY);localStorage.removeItem(SYNC_KEY);$('#storageDescription').textContent='Сохранение в этом браузере. Облако подключается в разделе «ChatGPT и облако».';backup();render();toast('Облако отключено; рабочая копия осталась в браузере')}
 async function loadProposals(){if(!cloud)return;try{const result=await cloudRequest('/api/gpt');proposals=result.proposals||[];if(route.kind==='sync')render()}catch(error){toast(error.message)}}
 async function refreshCloud(){if(!cloud)return;try{const remote=await cloudRequest('/api/workspace');if(remote.state&&remote.revision!==revision){if(dirty)exportState();state=M.validate(remote.state);revision=remote.revision;dirty=false;blocked=false;backup()}await loadProposals();render();toast('Облачная копия обновлена')}catch(error){toast(error.message)}}
 function proposalRecord(p){const id='gpt-'+p.id,link=M.resolve(state,p.targetRef||'')?[p.targetRef]:[],stamp=new Date().toISOString(),source='ChatGPT Plugin · '+p.sourceChat;let kind,row;
@@ -274,7 +283,7 @@ $('#importFile').addEventListener('change',async event=>{
 window.addEventListener('hashchange',()=>{
   if(previousHash)scrollPositions.set(previousHash,window.scrollY);
   if(!history.state?.discoveryPage)history.replaceState({discoveryPage:true,discoveryDepth:(window.discoveryDepth||0)+1},'',location.href);
-  window.discoveryDepth=history.state?.discoveryDepth||0;previousHash=location.hash;preview=false;closeDialog();flush();render();if(route.kind==='sync'&&cloud)loadProposals();if(route.kind==='researchInterviews')ensureInterviewData();window.scrollTo(0,scrollPositions.get(location.hash)||0);
+  window.discoveryDepth=history.state?.discoveryDepth||0;previousHash=location.hash;preview=false;closeDialog();flush();render();if(route.kind==='sync'&&cloud)loadProposals();if(route.kind==='researchInterviews')ensureInterviewData();if(route.kind==='researchHub')ensureInterviewSummary();window.scrollTo(0,scrollPositions.get(location.hash)||0);
 });
 window.addEventListener('keydown',event=>{if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='k'){event.preventDefault();searchDialog()}if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='s'){event.preventDefault();flush();toast('Сохраняем рабочее пространство')}});
 window.addEventListener('beforeunload',event=>{if(dirty){backup();event.preventDefault();event.returnValue='';}});
@@ -295,7 +304,7 @@ async function init(){
     else{state=structuredClone(seedState);const legacyMatrix=storageRead('portfolio-training-matrix'),legacyCrud=storageRead('portfolio-training-crud');if(Array.isArray(legacyMatrix))state.matrix=legacyMatrix;if(legacyCrud&&typeof legacyCrud==='object')state.crud=legacyCrud;M.validate(state);}
     let added=false;for(const doc of seedState.documents)if(!state.documents.some(d=>d.id===doc.id)){state.documents.push(doc);added=true;}
     $('#storageDescription').textContent=cloud?'Автосохранение в закрытом облаке\nи копия в браузере':server?'Автосохранение на диск\nи резервная копия в браузере':'Сохранение в этом браузере. Облако подключается в разделе «ChatGPT и облако».';
-    if(!location.hash.startsWith('#/'))history.replaceState(null,'',uri('home'));history.replaceState({discoveryPage:true,discoveryDepth:0},'',location.href);previousHash=location.hash;window.discoveryDepth=0;render();setSaveStatus(cloud?'Облачная копия загружена':server?'Рабочее пространство загружено с диска':'Локальный режим · сохранение в браузере');if(cloudError)showError('Облако недоступно: '+cloudError+' Данные открыты из браузера.');if(cloud)loadProposals();if(route.kind==='researchInterviews')ensureInterviewData();
+    if(!location.hash.startsWith('#/'))history.replaceState(null,'',uri('home'));history.replaceState({discoveryPage:true,discoveryDepth:0},'',location.href);previousHash=location.hash;window.discoveryDepth=0;render();setSaveStatus(cloud?'Облачная копия загружена':server?'Рабочее пространство загружено с диска':'Локальный режим · сохранение в браузере');if(cloudError)showError('Облако недоступно: '+cloudError+' Данные открыты из браузера.');if(cloud)loadProposals();if(route.kind==='researchInterviews')ensureInterviewData();if(route.kind==='researchHub')ensureInterviewSummary();
     if(local?.dirty&&remote?.state){
       modal('Найдена несохранённая копия','<p class="dialog-note">В браузере остались изменения, которые могли не попасть на диск. Можно восстановить их или скачать отдельно, сохранив текущую версию с диска.</p><div class="dialog-footer"><button class="button" id="downloadDraft">Скачать копию</button><button class="button primary" id="recoverDraft">Восстановить</button></div>');
       $('#downloadDraft').onclick=()=>download('portfolio-unsaved-copy.json',JSON.stringify({version:2,state:local.state},null,2));
