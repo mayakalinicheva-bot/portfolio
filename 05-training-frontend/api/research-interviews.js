@@ -49,16 +49,14 @@ function validate(data) {
 
 function summary(value) {
   const data = value?.data;
-  if (!data) return { revision: 0, savedAt: null, sourceRevisionId: null, interviewCount: 0, blockCount: 0, questionCount: 0, answerCount: 0, respondents: [] };
+  if (!data) return { revision: 0, savedAt: null, interviewCount: 0, blockCount: 0, questionCount: 0, answerCount: 0 };
   return {
     revision: value.revision,
     savedAt: value.savedAt,
-    sourceRevisionId: data.source.revisionId,
     interviewCount: data.interviews.length,
     blockCount: data.guide.blocks.length,
     questionCount: data.guide.questions.length,
     answerCount: data.interviews.reduce((total, interview) => total + interview.answers.length, 0),
-    respondents: data.interviews.map(interview => ({ respondentId: interview.respondentId, answerCount: interview.answers.length })),
   };
 }
 

@@ -1,27 +1,14 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-20",
-  "milestone": "Deploy #1 · qualitative research complete",
-  "sources": {
-    "canonicalDocumentId": "1IpqYtWjJhqJd_NBNrsvbF6c5l4SfSJ1fWOoT4F2sc4M",
-    "canonicalRevisionId": "AHj4eMTMYaQISpZjA-bodGxCNRHw6bxfNQyS6HB35oUABLG8Wc3Fvgb5zumM-8lJMOFIiexrMqFxu7uQU6qgT6lbdLC9T7TETnRFW0N7LMw",
-    "rawDocumentId": "1SbPQWi3vwxIPJS4s1ddebn8AWqC48mjc69Kbsdm3a9w",
-    "rawRevisionId": "AHj4eMR7EXWRtp-G0W1mMYOK78J1QCAOfuZdd050S46o8zyVgu0UN1rPYS9rSaI1TIFPoLkqDDsjL8WpUsBoaqFX3cHM1-GrPFucbpg_p24"
-  },
+  "updatedAt": "2026-11-21",
+  "milestone": "Агрегированный качественный синтез; respondent-level сверка не опубликована",
   "sample": {
-    "independent": [
-      "R01",
-      "R02",
-      "R03",
-      "R04",
-      "R05",
-      "R06",
-      "R07"
-    ],
-    "self": "SELF01/R08",
+    "sessionCount": 8,
+    "independentCount": 7,
+    "self": "SELF01",
     "questions": 120,
     "answers": 960,
-    "note": "SELF01/R08 показывается отдельно и не увеличивает частотность независимых наблюдений. R01 — внешний сравнительный респондент."
+    "note": "R01–R07 — независимые участники; SELF01 — отдельная самооценка. R01 — внешний сравнительный участник. Ответы — ячейки данных, а не независимые наблюдения."
   },
   "patterns": [
     {
@@ -33,9 +20,7 @@
       "rf": "RF-81–RF-87",
       "decisionImpact": "Problem / Post-publication value",
       "requirementsImpact": "Подтверждает проблему и долгосрочное хранение Case",
-      "evidenceNote": "R01–R07: cross-block synthesis; SELF01 отдельно",
-      "respondents": [],
-      "self01": false
+      "evidenceNote": "Кросс-блочный качественный синтез; индивидуальная трассировка не опубликована"
     },
     {
       "id": "CP-02",
@@ -46,17 +31,7 @@
       "rf": "RF-92, RF-93",
       "decisionImpact": "Discovery is Core",
       "requirementsImpact": "Подтверждает Guest discovery, feed и профиль автора",
-      "evidenceNote": "R01–R07 подтверждают отсутствие специализированного пространства; SELF01 — контекст сайтов",
-      "respondents": [
-        "R01",
-        "R02",
-        "R03",
-        "R04",
-        "R05",
-        "R06",
-        "R07"
-      ],
-      "self01": true
+      "evidenceNote": "Кросс-блочный качественный синтез; индивидуальная трассировка не опубликована"
     },
     {
       "id": "CP-03",
@@ -67,9 +42,7 @@
       "rf": "RF-91, RF-94, RF-96",
       "decisionImpact": "Product boundary",
       "requirementsImpact": "NO CHANGE: сохраняется отдельная ниша",
-      "evidenceNote": "Cross-block synthesis",
-      "respondents": [],
-      "self01": false
+      "evidenceNote": "Кросс-блочный качественный синтез; индивидуальная трассировка не опубликована"
     },
     {
       "id": "CP-04",
@@ -80,9 +53,7 @@
       "rf": "RF-95, RF-117",
       "decisionImpact": "Author Autonomy",
       "requirementsImpact": "Уточняет EDIT-08/09, VIS-03, PROF-17, TEAM-OWN-01",
-      "evidenceNote": "Evidence + approved product decision",
-      "respondents": [],
-      "self01": false
+      "evidenceNote": "Evidence + approved product decision"
     },
     {
       "id": "CP-05",
@@ -93,9 +64,7 @@
       "rf": "RF-05, RF-104, RF-110",
       "decisionImpact": "Case model",
       "requirementsImpact": "Подтверждает EDIT-02, CASE-TOOLS-01, TEAM-ROLE-01",
-      "evidenceNote": "Cross-block synthesis",
-      "respondents": [],
-      "self01": false
+      "evidenceNote": "Cross-block synthesis"
     },
     {
       "id": "CP-06",
@@ -106,9 +75,7 @@
       "rf": "RF-103, RF-107",
       "decisionImpact": "Publication boundary",
       "requirementsImpact": "Подтверждает EDIT-09, VIS-03 и Author Autonomy",
-      "evidenceNote": "Cross-block synthesis",
-      "respondents": [],
-      "self01": false
+      "evidenceNote": "Cross-block synthesis"
     },
     {
       "id": "CP-07",
@@ -119,9 +86,7 @@
       "rf": "RF-73",
       "decisionImpact": "Discovery value",
       "requirementsImpact": "Подтверждает GUEST-01/02 и PROF-13/15",
-      "evidenceNote": "Independent sample; SELF01 не увеличивает частотность",
-      "respondents": [],
-      "self01": false
+      "evidenceNote": "Independent sample; SELF01 не увеличивает частотность"
     },
     {
       "id": "CP-08",
@@ -132,9 +97,7 @@
       "rf": "RF-72, RF-112",
       "decisionImpact": "Case → Author",
       "requirementsImpact": "Подтверждает переход Case → Profile; networking остаётся гипотезой",
-      "evidenceNote": "Actual discovery и hypothetical outcome разделены",
-      "respondents": [],
-      "self01": false
+      "evidenceNote": "Actual discovery и hypothetical outcome разделены"
     },
     {
       "id": "CP-09",
@@ -145,9 +108,7 @@
       "rf": "RF-74, RF-77, RF-78",
       "decisionImpact": "Signal semantics",
       "requirementsImpact": "Подтверждает GUEST-06, VIEW-01, FEED-01–03, PROF-17",
-      "evidenceNote": "Views не трактуются как quality",
-      "respondents": [],
-      "self01": false
+      "evidenceNote": "Views не трактуются как quality"
     },
     {
       "id": "CP-10",
@@ -158,9 +119,7 @@
       "rf": "RF-118",
       "decisionImpact": "Social Reaction → Return",
       "requirementsImpact": "Уточняет ENG/PERS evidence; коэффициенты не выводятся",
-      "evidenceNote": "Stated intention, not measured retention",
-      "respondents": [],
-      "self01": false
+      "evidenceNote": "Stated intention, not measured retention"
     },
     {
       "id": "CP-11",
@@ -171,9 +130,7 @@
       "rf": "RF-77, RF-81–RF-87",
       "decisionImpact": "Teacher role",
       "requirementsImpact": "Подтверждает PROF-17 и FEED-02",
-      "evidenceNote": "Не расширяет CRUD преподавателя",
-      "respondents": [],
-      "self01": false
+      "evidenceNote": "Не расширяет CRUD преподавателя"
     },
     {
       "id": "CP-12",
@@ -184,9 +141,7 @@
       "rf": "RF-116",
       "decisionImpact": "Post-MVP boundary",
       "requirementsImpact": "Подтверждает TEAM-ROLE-01/02, TEAM-OWN-01; TEAM-SCORE-01 не реализуется",
-      "evidenceNote": "Support does not change MVP1",
-      "respondents": [],
-      "self01": false
+      "evidenceNote": "Support does not change MVP1"
     },
     {
       "id": "CP-13",
@@ -197,121 +152,18 @@
       "rf": "RF-102, RF-108, RF-109",
       "decisionImpact": "Value proposition",
       "requirementsImpact": "Уточняет Profile/Case implications без новой сущности",
-      "evidenceNote": "Interpretation grounded in qualitative evidence",
-      "respondents": [],
-      "self01": false
+      "evidenceNote": "Interpretation grounded in qualitative evidence"
     },
     {
       "id": "CP-14",
       "title": "External / Admissions Value",
       "statement": "Работы студентов могут помогать понять направления обучения; влияние на заявки и поступление не измерено, Applicant role не создаётся.",
       "evidenceType": "actual + open outcome",
-      "questions": "R06 Q3",
+      "questions": "Q3",
       "rf": "RF-02, RF-08",
       "decisionImpact": "Admissions Discovery",
       "requirementsImpact": "Подтверждает external read value; conversion остаётся OPEN",
-      "evidenceNote": "Прямой actual example: R06",
-      "respondents": [
-        "R06"
-      ],
-      "self01": false
-    }
-  ],
-  "hypotheses": [
-    {
-      "id": "H-Q01",
-      "title": "Дальнейшая жизнь работ",
-      "status": "Подтверждена"
-    },
-    {
-      "id": "H-Q02",
-      "title": "Fragmented Discovery",
-      "status": "Подтверждена"
-    },
-    {
-      "id": "H-Q03",
-      "title": "Author Autonomy",
-      "status": "Подтверждена"
-    },
-    {
-      "id": "H-Q04",
-      "title": "Ценность discovery",
-      "status": "Подтверждена"
-    },
-    {
-      "id": "H-Q05",
-      "title": "Social interaction around Cases",
-      "status": "Подтверждена"
-    },
-    {
-      "id": "H-Q06",
-      "title": "Ценность компетентного feedback",
-      "status": "Подтверждена"
-    },
-    {
-      "id": "H-Q07",
-      "title": "Case → Author",
-      "status": "Подтверждена"
-    },
-    {
-      "id": "H-Q08",
-      "title": "Professional self-presentation",
-      "status": "Подтверждена"
-    },
-    {
-      "id": "H-Q09",
-      "title": "Спрос на полноценное соавторство",
-      "status": "Частично подтверждена"
-    },
-    {
-      "id": "H-Q10",
-      "title": "Social Reaction → Return",
-      "status": "Частично подтверждена"
-    },
-    {
-      "id": "H-Q11",
-      "title": "Admissions Discovery",
-      "status": "Частично подтверждена"
-    },
-    {
-      "id": "H-Q12",
-      "title": "Employer discovery",
-      "status": "Не проверена"
-    },
-    {
-      "id": "H-Q13",
-      "title": "Employment effect",
-      "status": "Не проверена"
-    },
-    {
-      "id": "H-Q14",
-      "title": "Admissions conversion",
-      "status": "Не проверена"
-    },
-    {
-      "id": "H-Q15",
-      "title": "Launch retention",
-      "status": "Не проверена"
-    },
-    {
-      "id": "H-Q16",
-      "title": "Финальные коэффициенты рекомендаций",
-      "status": "Не проверена"
-    },
-    {
-      "id": "H-Q17",
-      "title": "Professional History",
-      "status": "В исследовании"
-    },
-    {
-      "id": "H-Q18",
-      "title": "Case → Author → Networking",
-      "status": "В исследовании"
-    },
-    {
-      "id": "H-Q19",
-      "title": "Cold Start",
-      "status": "В исследовании"
+      "evidenceNote": "Требует закрытой сверки индивидуального основания; не трактуется как оценка поступления"
     }
   ],
   "boundaries": [
@@ -357,4 +209,3 @@
     "evidence": "RF-07, RF-113"
   }
 }
-
