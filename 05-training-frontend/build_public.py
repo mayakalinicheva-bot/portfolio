@@ -8,6 +8,7 @@ public = root / "public"
 assets = (
     "index.html", "styles.css", "model.js", "workspace.js",
     "data/matrix.json", "data/discovery.json",
+    "data/deploy1-matrix.json", "data/qualitative-analysis.json",
 )
 public.mkdir(exist_ok=True)
 for relative in assets:
