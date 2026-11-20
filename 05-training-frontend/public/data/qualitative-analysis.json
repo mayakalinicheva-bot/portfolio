@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-11-20",
+  "milestone": "Deploy #1 · qualitative research complete",
+  "sources": {
+    "canonicalDocumentId": "1IpqYtWjJhqJd_NBNrsvbF6c5l4SfSJ1fWOoT4F2sc4M",
+    "canonicalRevisionId": "AHj4eMTMYaQISpZjA-bodGxCNRHw6bxfNQyS6HB35oUABLG8Wc3Fvgb5zumM-8lJMOFIiexrMqFxu7uQU6qgT6lbdLC9T7TETnRFW0N7LMw",
+    "rawDocumentId": "1SbPQWi3vwxIPJS4s1ddebn8AWqC48mjc69Kbsdm3a9w",
+    "rawRevisionId": "AHj4eMR7EXWRtp-G0W1mMYOK78J1QCAOfuZdd050S46o8zyVgu0UN1rPYS9rSaI1TIFPoLkqDDsjL8WpUsBoaqFX3cHM1-GrPFucbpg_p24"
+  },
+  "sample": {
+    "independent": [
+      "R01",
+      "R02",
+      "R03",
+      "R04",
+      "R05",
+      "R06",
+      "R07"
+    ],
+    "self": "SELF01/R08",
+    "questions": 120,
+    "answers": 960,
+    "note": "SELF01/R08 показывается отдельно и не увеличивает частотность независимых наблюдений. R01 — внешний сравнительный респондент."
+  },
+  "patterns": [
+    {
+      "id": "CP-01",
+      "title": "Потеря дальнейшей жизни работы после учебной сдачи",
+      "statement": "Учебный процесс не обеспечивает дальнейшую видимость и использование значительной части созданных проектов.",
+      "evidenceType": "actual",
+      "questions": "Q17, Q31, Q81–Q90",
+      "rf": "RF-81–RF-87",
+      "decisionImpact": "Problem / Post-publication value",
+      "requirementsImpact": "Подтверждает проблему и долгосрочное хранение Case",
+      "evidenceNote": "R01–R07: cross-block synthesis; SELF01 отдельно",
+      "respondents": [],
+      "self01": false
+    },
+    {
+      "id": "CP-02",
+      "title": "Фрагментированная экосистема хранения, публикации и discovery",
+      "statement": "Нет единого пространства для самостоятельной публикации, долгосрочного хранения и системного обнаружения работ и авторов IThub.",
+      "evidenceType": "actual",
+      "questions": "Q18, Q21–Q25, Q61–Q63, Q91–Q100",
+      "rf": "RF-92, RF-93",
+      "decisionImpact": "Discovery is Core",
+      "requirementsImpact": "Подтверждает Guest discovery, feed и профиль автора",
+      "evidenceNote": "R01–R07 подтверждают отсутствие специализированного пространства; SELF01 — контекст сайтов",
+      "respondents": [
+        "R01",
+        "R02",
+        "R03",
+        "R04",
+        "R05",
+        "R06",
+        "R07"
+      ],
+      "self01": true
+    },
+    {
+      "id": "CP-03",
+      "title": "Portfolio занимает отдельную социально-профессиональную нишу",
+      "statement": "Portfolio соединяет Cases, Authors, Discovery, interaction и professional presentation; не заменяет LXP, внешние портфолио-площадки или официальный сайт.",
+      "evidenceType": "synthesis",
+      "questions": "Q91–Q100",
+      "rf": "RF-91, RF-94, RF-96",
+      "decisionImpact": "Product boundary",
+      "requirementsImpact": "NO CHANGE: сохраняется отдельная ниша",
+      "evidenceNote": "Cross-block synthesis",
+      "respondents": [],
+      "self01": false
+    },
+    {
+      "id": "CP-04",
+      "title": "Author Autonomy & Ownership",
+      "statement": "Управление Case, взаимодействие и Expert signal — разные permission layers. Взаимодействие не даёт права управлять Case.",
+      "evidenceType": "actual + decision",
+      "questions": "Q31–Q40, Q51–Q60, Q118",
+      "rf": "RF-95, RF-117",
+      "decisionImpact": "Author Autonomy",
+      "requirementsImpact": "Уточняет EDIT-08/09, VIS-03, PROF-17, TEAM-OWN-01",
+      "evidenceNote": "Evidence + approved product decision",
+      "respondents": [],
+      "self01": false
+    },
+    {
+      "id": "CP-05",
+      "title": "Case как богатая центральная сущность",
+      "statement": "Case может показывать контекст, результат, процесс, решения, задачи, инструменты, вклад и медиа без обязательной универсальной анкеты.",
+      "evidenceType": "actual",
+      "questions": "Q11–Q14, Q101–Q110",
+      "rf": "RF-05, RF-104, RF-110",
+      "decisionImpact": "Case model",
+      "requirementsImpact": "Подтверждает EDIT-02, CASE-TOOLS-01, TEAM-ROLE-01",
+      "evidenceNote": "Cross-block synthesis",
+      "respondents": [],
+      "self01": false
+    },
+    {
+      "id": "CP-06",
+      "title": "Academic Value ≠ Public Value ≠ Professional Value",
+      "statement": "Оценка, завершённость и внешнее одобрение не определяют право автора публиковать Case.",
+      "evidenceType": "actual + decision",
+      "questions": "Q81–Q90, Q101–Q110",
+      "rf": "RF-103, RF-107",
+      "decisionImpact": "Publication boundary",
+      "requirementsImpact": "Подтверждает EDIT-09, VIS-03 и Author Autonomy",
+      "evidenceNote": "Cross-block synthesis",
+      "respondents": [],
+      "self01": false
+    },
+    {
+      "id": "CP-07",
+      "title": "Discovery и насмотренность — самостоятельная ценность",
+      "statement": "Просмотр чужих работ поддерживает inspiration, references, анализ решений и профессиональное развитие.",
+      "evidenceType": "actual",
+      "questions": "Q61–Q75",
+      "rf": "RF-73",
+      "decisionImpact": "Discovery value",
+      "requirementsImpact": "Подтверждает GUEST-01/02 и PROF-13/15",
+      "evidenceNote": "Independent sample; SELF01 не увеличивает частотность",
+      "respondents": [],
+      "self01": false
+    },
+    {
+      "id": "CP-08",
+      "title": "Case → Author → Networking",
+      "statement": "Case может вести к профилю, другим работам, подписке или контакту; employment outcome не доказан.",
+      "evidenceType": "actual + hypothetical",
+      "questions": "Q61–Q73, Q111–Q120",
+      "rf": "RF-72, RF-112",
+      "decisionImpact": "Case → Author",
+      "requirementsImpact": "Подтверждает переход Case → Profile; networking остаётся гипотезой",
+      "evidenceNote": "Actual discovery и hypothetical outcome разделены",
+      "respondents": [],
+      "self01": false
+    },
+    {
+      "id": "CP-09",
+      "title": "Social Signals ≠ Expert Signals",
+      "statement": "View, Like, Save, Comment и Teacher Award имеют разную семантику; popularity не равна quality.",
+      "evidenceType": "actual + decision",
+      "questions": "Q74–Q80",
+      "rf": "RF-74, RF-77, RF-78",
+      "decisionImpact": "Signal semantics",
+      "requirementsImpact": "Подтверждает GUEST-06, VIEW-01, FEED-01–03, PROF-17",
+      "evidenceNote": "Views не трактуются как quality",
+      "respondents": [],
+      "self01": false
+    },
+    {
+      "id": "CP-10",
+      "title": "Post-publication value",
+      "statement": "После публикации возможны discovery, реакции, feedback и expert recognition; это поддерживаемая модель, но не доказанный retention loop.",
+      "evidenceType": "concept validation",
+      "questions": "Q119",
+      "rf": "RF-118",
+      "decisionImpact": "Social Reaction → Return",
+      "requirementsImpact": "Уточняет ENG/PERS evidence; коэффициенты не выводятся",
+      "evidenceNote": "Stated intention, not measured retention",
+      "respondents": [],
+      "self01": false
+    },
+    {
+      "id": "CP-11",
+      "title": "Expert feedback / Teacher Award",
+      "statement": "Teacher Award — отдельный компетентный Expert signal без ownership, grade или publication approval.",
+      "evidenceType": "actual + decision",
+      "questions": "Q77–Q78, Q81–Q90",
+      "rf": "RF-77, RF-81–RF-87",
+      "decisionImpact": "Teacher role",
+      "requirementsImpact": "Подтверждает PROF-17 и FEED-02",
+      "evidenceNote": "Не расширяет CRUD преподавателя",
+      "respondents": [],
+      "self01": false
+    },
+    {
+      "id": "CP-12",
+      "title": "Coauthorship",
+      "statement": "Ценность совместного авторства поддержана, но полноценная модель остаётся Post-MVP; contribution score не вводится.",
+      "evidenceType": "actual + decision",
+      "questions": "Q41–Q60, Q117",
+      "rf": "RF-116",
+      "decisionImpact": "Post-MVP boundary",
+      "requirementsImpact": "Подтверждает TEAM-ROLE-01/02, TEAM-OWN-01; TEAM-SCORE-01 не реализуется",
+      "evidenceNote": "Support does not change MVP1",
+      "respondents": [],
+      "self01": false
+    },
+    {
+      "id": "CP-13",
+      "title": "Professional History",
+      "statement": "Накопление Cases, Profile, tools, contribution и chronology формирует профессиональную историю; это value layer, не новая entity.",
+      "evidenceType": "synthesis",
+      "questions": "Q101–Q110",
+      "rf": "RF-102, RF-108, RF-109",
+      "decisionImpact": "Value proposition",
+      "requirementsImpact": "Уточняет Profile/Case implications без новой сущности",
+      "evidenceNote": "Interpretation grounded in qualitative evidence",
+      "respondents": [],
+      "self01": false
+    },
+    {
+      "id": "CP-14",
+      "title": "External / Admissions Value",
+      "statement": "Работы студентов могут помогать понять направления обучения; влияние на заявки и поступление не измерено, Applicant role не создаётся.",
+      "evidenceType": "actual + open outcome",
+      "questions": "R06 Q3",
+      "rf": "RF-02, RF-08",
+      "decisionImpact": "Admissions Discovery",
+      "requirementsImpact": "Подтверждает external read value; conversion остаётся OPEN",
+      "evidenceNote": "Прямой actual example: R06",
+      "respondents": [
+        "R06"
+      ],
+      "self01": false
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "H-Q01",
+      "title": "Дальнейшая жизнь работ",
+      "status": "Подтверждена"
+    },
+    {
+      "id": "H-Q02",
+      "title": "Fragmented Discovery",
+      "status": "Подтверждена"
+    },
+    {
+      "id": "H-Q03",
+      "title": "Author Autonomy",
+      "status": "Подтверждена"
+    },
+    {
+      "id": "H-Q04",
+      "title": "Ценность discovery",
+      "status": "Подтверждена"
+    },
+    {
+      "id": "H-Q05",
+      "title": "Social interaction around Cases",
+      "status": "Подтверждена"
+    },
+    {
+      "id": "H-Q06",
+      "title": "Ценность компетентного feedback",
+      "status": "Подтверждена"
+    },
+    {
+      "id": "H-Q07",
+      "title": "Case → Author",
+      "status": "Подтверждена"
+    },
+    {
+      "id": "H-Q08",
+      "title": "Professional self-presentation",
+      "status": "Подтверждена"
+    },
+    {
+      "id": "H-Q09",
+      "title": "Спрос на полноценное соавторство",
+      "status": "Частично подтверждена"
+    },
+    {
+      "id": "H-Q10",
+      "title": "Social Reaction → Return",
+      "status": "Частично подтверждена"
+    },
+    {
+      "id": "H-Q11",
+      "title": "Admissions Discovery",
+      "status": "Частично подтверждена"
+    },
+    {
+      "id": "H-Q12",
+      "title": "Employer discovery",
+      "status": "Не проверена"
+    },
+    {
+      "id": "H-Q13",
+      "title": "Employment effect",
+      "status": "Не проверена"
+    },
+    {
+      "id": "H-Q14",
+      "title": "Admissions conversion",
+      "status": "Не проверена"
+    },
+    {
+      "id": "H-Q15",
+      "title": "Launch retention",
+      "status": "Не проверена"
+    },
+    {
+      "id": "H-Q16",
+      "title": "Финальные коэффициенты рекомендаций",
+      "status": "Не проверена"
+    },
+    {
+      "id": "H-Q17",
+      "title": "Professional History",
+      "status": "В исследовании"
+    },
+    {
+      "id": "H-Q18",
+      "title": "Case → Author → Networking",
+      "status": "В исследовании"
+    },
+    {
+      "id": "H-Q19",
+      "title": "Cold Start",
+      "status": "В исследовании"
+    }
+  ],
+  "boundaries": [
+    [
+      "LXP",
+      "Учебный процесс: задания, сдача, feedback, оценка"
+    ],
+    [
+      "Behance / Dprofile",
+      "Внешние универсальные портфолио и inspiration-площадки"
+    ],
+    [
+      "Официальный сайт IThub",
+      "Институциональная информация и выборочный показ работ"
+    ],
+    [
+      "Employment",
+      "Возможный downstream outcome; эффект не доказан"
+    ],
+    [
+      "Mentoring",
+      "Не входит в подтверждённый scope"
+    ]
+  ],
+  "valueModel": [
+    "Project",
+    "Case",
+    "Publish",
+    "Discovery",
+    "Interaction / Expert feedback",
+    "Professional History",
+    "Networking / opportunities"
+  ],
+  "risk": {
+    "id": "RISK-COLD-START",
+    "title": "Cold Start",
+    "statement": "Существующие проекты могут не превратиться в добровольно опубликованные качественные Cases; слабый Discovery и малое взаимодействие снижают мотивацию публиковать и возвращаться.",
+    "types": [
+      "Activation risk",
+      "Publication risk",
+      "Community risk"
+    ],
+    "evidence": "RF-07, RF-113"
+  }
+}
+
