@@ -199,7 +199,7 @@ class Handler(SimpleHTTPRequestHandler):
             self.end_headers()
             return self.wfile.write(payload)
         # Only frontend assets are public; runtime data/backups use the API.
-        if path not in ("/", "/index.html", "/workspace.js", "/model.js", "/styles.css", "/data/matrix.json", "/data/discovery.json"):
+        if path not in ("/", "/index.html", "/workspace.js", "/model.js", "/styles.css", "/data/matrix.json", "/data/discovery.json", "/data/qualitative-analysis.json"):
             return self.send_error(404)
         super().do_GET()
 
