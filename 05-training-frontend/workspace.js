@@ -5,7 +5,7 @@ const KEY='portfolio-discovery-v2';
 const SYNC_KEY='portfolio-discovery-sync-key';
 const paths={home:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',file:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/>',bulb:'<path d="M9 18h6M9 21h6M8 14a7 7 0 1 1 8 0l-1 2H9z"/>',search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',check:'<path d="m7 12 3 3 7-7"/><rect x="3" y="3" width="18" height="18" rx="5"/>',layers:'<path d="m12 3 10 6-10 6L2 9zM2 13l10 6 10-6M2 17l10 6 10-6"/>',grid:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M3 15h18M9 3v18"/>',calendar:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 2v6M17 2v6M3 11h18M8 15h3M8 18h6"/>',arrow:'<path d="M5 12h14m-5-5 5 5-5 5"/>',back:'<path d="M19 12H5m5-5-5 5 5 5"/>',download:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>',upload:'<path d="M12 16V4m-5 5 5-5 5 5M4 16v5h16v-5"/>',archive:'<rect x="3" y="3" width="18" height="5" rx="1"/><path d="M5 8v13h14V8M9 12h6"/>',lock:'<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>',report:'<path d="M8 3h12v18H4V7zM8 3v4H4M8 11h8M8 15h8M8 18h5"/>',close:'<path d="m6 6 12 12M18 6 6 18"/>',plus:'<path d="M12 5v14M5 12h14"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/>'};
 function icon(name){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[name]||paths.file)+'</svg>'}
-const extras={home:'Обзор',researchHub:'Интервью',researchPlan:'Research Plan',researchInterviews:'Глубинные интервью',researchSurveys:'Количественные опросы',researchAnalysis:'Qualitative analysis',crud:'CRUD по ролям',report:'Основной отчёт',archive:'Архив',sync:'ChatGPT и облако'};
+const extras={home:'Обзор',researchHub:'Интервью',researchPlan:'Research Plan',researchInterviews:'Глубинные интервью',researchSurveys:'Количественные опросы',researchAnalysis:'Анализ глубинных интервью',crud:'CRUD по ролям',report:'Основной отчёт',archive:'Архив',sync:'ChatGPT и облако'};
 let state,seedState,revision=0,server=false,cloud=false,cloudToken='',proposals=[],dirty=false,generation=0,saving=false,blocked=false,saveTimer,toastTimer,preview=false;
 let interviewStore=null,interviewSummary=null,interviewRevision=0,interviewLoading=false,interviewSummaryLoading=false,interviewError='';
 let qualitativeAnalysis=null,deploy1Matrix=[];
@@ -95,13 +95,13 @@ function nav(){
   $('#navigation').innerHTML=groups.map(([title,items])=>'<div class="nav-label">'+title+'</div>'+items.map(kind=>'<a class="nav-link '+(route.kind===kind||(['researchPlan','researchInterviews','researchSurveys','researchAnalysis'].includes(route.kind)&&kind==='researchHub')?'active':'')+'" href="'+uri(kind)+'" '+(route.kind===kind?'aria-current="page"':'')+'>'+icon(M.config[kind]?.icon||({home:'home',researchHub:'search',crud:'lock',report:'report',archive:'archive',sync:'upload'})[kind])+'<span>'+titleFor(kind)+'</span><span class="nav-number">'+(M.kinds.includes(kind)?alive(kind).length:kind==='report'?state.reportItems.filter(r=>lookup(r)&&!lookup(r).row.archived).length:kind==='sync'&&cloud?proposals.filter(p=>p.status==='pending').length:'')+'</span></a>').join('')).join('');
 }
 function breadcrumbs(){const row=currentRecord();$('#breadcrumbs').innerHTML='<a class="root-crumb" href="'+uri('home')+'">Рабочее пространство</a><span class="root-crumb">/</span>'+(row?'<a href="'+uri(route.kind)+'">'+titleFor(route.kind)+'</a><span>/</span><b>'+esc(M.recordTitle(route.kind,row))+'</b>':'<b>'+titleFor(route.kind)+'</b>');$('#backButton').disabled=route.kind==='home'&&!(history.state?.discoveryDepth>0)}
-function render(){if(!state)return;route=parseRoute();nav();breadcrumbs();let html;const row=currentRecord();if(route.id&&M.kinds.includes(route.kind))html=row?detailView(route.kind,row):empty('Материал не найден. Он мог быть удалён из импортированной копии.',button('Вернуться к разделу','parent'));else if(route.kind==='home')html=homeView();else if(route.kind==='researchHub')html=researchHubView();else if(route.kind==='researchPlan')html=researchPlanView();else if(route.kind==='researchInterviews')html=researchInterviewsView();else if(route.kind==='researchAnalysis')html=qualitativeAnalysisView();else if(route.kind==='researchSurveys')html=researchSubsectionView(route.kind);else if(route.kind==='matrix')html=matrixView();else if(route.kind==='crud')html=crudView();else if(route.kind==='report')html=reportView();else if(route.kind==='archive')html=archiveView();else if(route.kind==='sync')html=syncView();else html=collectionView(route.kind);$('#content').innerHTML=html;}
+function render(){if(!state)return;route=parseRoute();nav();breadcrumbs();let html;const row=currentRecord();if(route.id&&M.kinds.includes(route.kind))html=row?detailView(route.kind,row):empty('Материал не найден. Он мог быть удалён из импортированной копии.',button('Вернуться к разделу','parent'));else if(route.kind==='home')html=homeView();else if(route.kind==='researchHub')html=researchHubView();else if(route.kind==='researchPlan')html=researchPlanView();else if(route.kind==='researchInterviews')html=researchInterviewsView();else if(route.kind==='researchAnalysis')html=qualitativeAnalysisView();else if(route.kind==='researchSurveys')html=researchSubsectionView(route.kind);else if(route.kind==='matrix')html=matrixView();else if(route.kind==='crud')html=crudView();else if(route.kind==='report')html=reportView();else if(route.kind==='archive')html=archiveView();else if(route.kind==='sync')html=syncView();else html=collectionView(route.kind);$('#content').innerHTML=html;if(route.kind==='researchAnalysis'){bindQualitativeTypography($('#content .qa-page'));initQualitativePanels();}}
 
 function findResearchPlan(){return state.documents.find(d=>d.id===M.researchPlan.id||d.title.trim().toLocaleLowerCase('ru-RU')===M.researchPlan.title.toLocaleLowerCase('ru-RU'))}
 function researchHubView(){
   const plan=findResearchPlan(),storedInterviews=interviewSummary?.interviewCount??interviewStore?.interviews?.length??null,surveys=alive('research').filter(r=>r.format==='Количественный опрос').length,hypotheses=alive('hypotheses').length,analysis=qualitativeAnalysis?.patterns?.length||14;
   const interviewLabel=storedInterviews===null?'8 в источнике · хранилище не подключено':storedInterviews===8?'8 загружено · 7 независимых + SELF01':'8 в источнике · в закрытом хранилище: '+storedInterviews;
-  const items=[['researchPlan','Research Plan','Согласованная методика: версия 1.0, 18 решений.',plan?'Документ сохранён в Discovery':'Утверждённый документ · v1.0'],['researchInterviews','Глубинные интервью','8 сессий: R01–R07 и отдельная самооценка SELF01.',interviewLabel+' · 960 ячеек ответов'],['researchSurveys','Количественные опросы','Анкеты и материалы опросов студентов и преподавателей.',surveys+' записей в рабочем пространстве'],['hypotheses','Гипотезы и доказательства','Текущий реестр проверяемых предположений.',hypotheses+' записей'],['researchAnalysis','Качественный анализ','14 паттернов, продуктовые границы и ограничения доказательств.',analysis+' паттернов']];
+  const items=[['researchPlan','Research Plan','Согласованная методика: версия 1.0, 18 решений.',plan?'Документ сохранён в Discovery':'Утверждённый документ · v1.0'],['researchInterviews','Глубинные интервью','8 сессий: R01–R07 и отдельная самооценка SELF01.',interviewLabel+' · 960 ячеек ответов'],['researchSurveys','Количественные опросы','Анкеты и материалы опросов студентов и преподавателей.',surveys+' записей в рабочем пространстве'],['hypotheses','Гипотезы и доказательства','Текущий реестр проверяемых предположений.',hypotheses+' записей'],['researchAnalysis','Анализ глубинных интервью','14 паттернов, продуктовые границы и ограничения доказательств.',analysis+' паттернов']];
   return heading('Интервью','План, первичные материалы и качественный анализ Portfolio.',button('Все записи исследований','open-research','quiet'),'PORTFOLIO / RESEARCH')+'<div class="research-intro"><span class="research-intro-mark">R</span><div><span class="eyebrow">DISCOVERY / RESEARCH</span><h2>От исследовательского вопроса к обоснованному решению</h2><p>В исследовательском массиве 8 сессий: семь независимых участников R01–R07 и отдельная самооценка SELF01. R01 — внешний сравнительный участник. Набор Q1–Q120 содержит 960 ячеек «вопрос–ответ», а не 960 независимых наблюдений. Первичные ответы остаются в закрытом контуре.</p></div></div><div class="research-grid">'+items.map(([kind,title,desc,count])=>'<a class="card research-tile" href="'+uri(kind)+'"><span class="research-tile-icon">'+icon(kind==='researchPlan'?'file':kind==='hypotheses'?'bulb':kind==='researchAnalysis'?'report':'search')+'</span><span class="eyebrow">'+(kind==='researchPlan'?'МЕТОДОЛОГИЯ':kind==='researchAnalysis'?'ОТЧЁТНОСТЬ':'СБОР И АНАЛИЗ')+'</span><h2>'+esc(title)+'</h2><p>'+esc(desc)+'</p><span class="research-tile-meta">'+esc(count)+' '+icon('arrow')+'</span></a>').join('')+'</div>';
 }
 function researchPlanView(){
@@ -142,18 +142,34 @@ function researchSubsectionView(kind){
   return '<a class="text-link back-link" href="'+uri('researchHub')+'">'+icon('back')+'К разделу «Исследования»</a>'+heading(title,'Анкеты и результаты количественных опросов студентов и преподавателей.',button('+ Добавить запись','new-research','primary','data-format="'+format+'"'))+'<div class="chips research-audiences"><button class="chip '+(!audience?'active':'')+'" data-action="audience" data-audience="">Все группы</button>'+audiences.map(a=>'<button class="chip '+(audience===a?'active':'')+'" data-action="audience" data-audience="'+esc(a)+'">'+esc(a)+'</button>').join('')+'</div><div class="card list-card">'+(rows.length?rows.map(r=>resourceRow('research',r,pill(r.status))).join(''):empty('Пока нет записей. Исследовательские данные не создаются автоматически.'))+'</div><p class="research-footnote">Для разделения материалов укажи формат и аудиторию в полях записи. Не добавляй персональные сведения респондентов.</p>';
 }
 
-function qualitativeAnalysisView(){
-  const data=qualitativeAnalysis;if(!data)return '<a class="text-link back-link" href="'+uri('researchHub')+'">'+icon('back')+'К разделу «Интервью»</a>'+heading('Qualitative analysis','Аналитический набор не загрузился.')+empty('Повтори загрузку страницы. Исходные данные не изменены.');
-  const patterns=data.patterns.map(p=>'<details class="qa-pattern"><summary><span class="qa-pattern-id">'+esc(p.id)+'</span><b>'+esc(p.title)+'</b>'+pill(p.evidenceType==='actual'?'Поведение':'Концепт')+icon('arrow')+'</summary><div class="qa-pattern-body"><p>'+esc(p.statement)+'</p><dl><div><dt>Вопросы источника</dt><dd>'+esc(p.questions)+'</dd></div><div><dt>Требования</dt><dd>'+esc(p.rf)+'</dd></div><div><dt>Продуктовое следствие</dt><dd>'+esc(p.decisionImpact)+'</dd></div><div><dt>Статус доказательства</dt><dd>Качественный синтез. Числовая уверенность не присваивалась.</dd></div><div><dt>Ограничение трассировки</dt><dd>Публичный набор не содержит надёжной таблицы «паттерн × участник» и проверенных контрпримеров. Они не выводятся из отсутствующих связей.</dd></div></dl></div></details>').join('');
-  return '<a class="text-link back-link" href="'+uri('researchHub')+'">'+icon('back')+'К разделу «Интервью»</a>'+heading('Качественный анализ','14 кросс-интервью паттернов и границы продуктовой интерпретации. Первичные ответы и индивидуальная трассировка остаются в закрытом контуре.','','PORTFOLIO / QUALITATIVE')+
-  '<div class="qa-metrics"><div><strong>7</strong><span>независимых участников R01–R07</span></div><div><strong>1</strong><span>самооценка SELF01 отдельно</span></div><div><strong>'+data.patterns.length+'</strong><span>паттернов CP-01–CP-14</span></div><div><strong>'+data.sample.answers+'</strong><span>ячеек ответов · не наблюдений</span></div></div>'+
-  '<div class="info-banner">'+icon('info')+'Набор включает вопросы Q1–Q120. Число 960 — количество ячеек «вопрос–ответ» (8 сессий × 120 вопросов), а не независимых наблюдений. R01 — внешний сравнительный участник. SELF01 — самооценка команды, не восьмой независимый респондент.</div>'+
-  '<section class="qa-section"><div class="section-heading"><div><h2>Паттерны CP-01–CP-14</h2><p>Открой паттерн, чтобы увидеть формулировку, Q/RF-ссылки и ограничения основания.</p></div></div><div class="qa-patterns">'+patterns+'</div></section>'+
-  '<div class="info-banner">'+icon('lock')+'Индивидуальные связи «паттерн × участник», сходства, различия и контрпримеры доступны только в закрытых первичных материалах. В доступной агрегированной копии эти поля отсутствуют, поэтому пустые ячейки не трактуются как отсутствие свидетельства.</div>'+
-  '<div class="qa-columns"><section class="card"><h2>Гипотезы</h2><p>Статусы управляются в актуальном реестре Discovery. Качественные паттерны не меняют их автоматически.</p><a class="text-link" href="'+uri('hypotheses')+'">Открыть реестр '+icon('arrow')+'</a></section><section class="card"><h2>Граница продукта</h2>'+data.boundaries.map(([name,desc])=>'<div class="qa-boundary"><b>'+esc(name)+'</b><span>'+esc(desc)+'</span></div>').join('')+'</section></div>'+
-  '<section class="card qa-section"><h2>Модель ценности — продуктовая теория</h2><div class="qa-flow">'+data.valueModel.map((v,i)=>'<span>'+esc(v)+(i<data.valueModel.length-1?icon('arrow'):'')+'</span>').join('')+'</div><p class="research-footnote">Эта цепочка — качественная продуктовая теория. Данные не доказывают retention, трудоустройство или конверсию в поступление.</p></section>'+
-  '<section class="card qa-risk"><span class="eyebrow">РИСК · '+esc(data.risk.evidence)+'</span><h2>'+esc(data.risk.title)+'</h2><p>'+esc(data.risk.statement)+'</p><div class="chips">'+data.risk.types.map(v=>'<span class="chip active">'+esc(v)+'</span>').join('')+'</div></section>';
+function bindQualitativeTypography(root){
+  if(!root)return;
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  const nodes=[];
+  while(walker.nextNode())nodes.push(walker.currentNode);
+  nodes.forEach(node=>{
+    if(node.parentElement?.closest('svg,script,style'))return;
+    node.nodeValue=node.nodeValue.replace(/(^|[^\p{L}])(в|во|на|по|с|со|к|ко|у|о|об|от|до|за|из|для|при|и|а|но) +(?=[\p{L}\p{N}«])/giu,'$1$2\u00a0');
+  });
 }
+function qualitativeAnalysisView(){
+  const data=qualitativeAnalysis;
+  if(!data)return '<a class="text-link back-link" href="'+uri('researchHub')+'">'+icon('back')+'К разделу «Интервью»</a>'+heading('Анализ глубинных интервью','Аналитический набор не загрузился.')+empty('Повтори загрузку страницы. Исходные данные не изменены.');
+  const paragraphs=items=>(items||[]).map(text=>'<p>'+esc(text)+'</p>').join('');
+  const list=items=>'<ul>'+items.map(item=>'<li>'+esc(item)+'</li>').join('')+'</ul>';
+  const evidence=p=>(p.quotes||[]).map(q=>'<figure class="qa-quote"><figcaption>'+esc(q.meta)+'</figcaption><blockquote>'+esc(q.text)+'</blockquote></figure>').join('')+(p.evidenceNotes?.length?'<div class="qa-evidence-notes">'+paragraphs(p.evidenceNotes)+'</div>':'');
+  const patterns=data.patterns.map(p=>{
+    const panel='qa-panel-'+p.id.toLowerCase();
+    const markup='<details class="qa-pattern" name="qa-patterns"><summary aria-expanded="false" aria-controls="'+panel+'"><svg class="qa-folder-shape" viewBox="0 0 400 380" preserveAspectRatio="none" aria-hidden="true"><defs><path id="'+panel+'-shape" d="M 0,106 Q 0,76 31,76 H 151 Q 160,76 168,85 L 188,106 Q 193,111 201,111 H 369 Q 400,111 400,141 V 349 Q 400,380 369,380 H 31 Q 0,380 0,349 Z"/><clipPath id="'+panel+'-clip"><use href="#'+panel+'-shape"/></clipPath><mask id="'+panel+'-outline" maskUnits="userSpaceOnUse" x="-10" y="-10" width="420" height="400"><use href="#'+panel+'-shape" fill="none" stroke="white" stroke-width="7" vector-effect="non-scaling-stroke"/><use href="#'+panel+'-shape" fill="none" stroke="black" stroke-width="5" vector-effect="non-scaling-stroke"/></mask></defs><use href="#'+panel+'-shape" fill="var(--blue)"/><use href="#'+panel+'-shape" fill="white" opacity=".2" clip-path="url(#'+panel+'-clip)" mask="url(#'+panel+'-outline)"/></svg><span class="qa-pattern-id">'+esc(p.id)+'</span><b>'+esc(p.title)+'</b><span class="qa-folder-meta"><span>'+esc(p.evidenceType)+'</span><span>'+esc(p.strength)+'</span></span></summary><article hidden class="qa-pattern-panel" id="'+panel+'"><header><span class="qa-pattern-id">'+esc(p.id)+'</span><h3>'+esc(p.title)+'</h3><p>'+esc(p.lead)+'</p></header><section><h4>Суть паттерна</h4>'+paragraphs(p.essence)+'</section>'+(p.formation?'<section><h4>Как сформировался паттерн</h4><p>'+esc(p.formation)+'</p></section>':'')+'<section><h4>Evidence</h4>'+evidence(p)+'</section>'+(p.synthesis?'<section><h4>Cross-interview synthesis</h4><p>'+esc(p.synthesis)+'</p></section>':'')+'<div class="qa-evidence-meta"><div><span>Evidence type</span><strong>'+esc(p.evidenceType)+'</strong></div><div><span>Evidence strength</span><strong>'+esc(p.strength)+'</strong></div></div><section><h4>Hypothesis impact</h4><p>'+esc(p.hypothesis)+'</p></section><section><h4>Product impact</h4>'+list(p.product)+'</section><section><h4>Граница интерпретации</h4><p>'+esc(p.boundary)+'</p></section><section class="qa-conclusion"><h4>Итог</h4><p>'+esc(p.conclusion)+'</p></section></article></details>';
+    return markup;
+  });
+  const pipeline=['Ответы респондентов','Исследовательские выводы','Кросс-интервью паттерны','Гипотезы','Продуктовые решения'];
+  return '<div class="qa-page"><a class="text-link back-link" href="'+uri('researchHub')+'">'+icon('back')+'К разделу «Интервью»</a>'+heading('Анализ глубинных интервью','','','PORTFOLIO / RESEARCH')+
+    '<section class="qa-intro"><h2>Анализ качественных интервью</h2><p>Анализ основан на 8 глубинных интервью и 120 вопросах: R01–R07 — независимые респонденты, SELF01 — отдельное self-interview автора исследования. Ответы анализировались по отдельным вопросам и тематическим блокам, после чего повторяющиеся наблюдения, проблемы, модели поведения и продуктовые ограничения были объединены в кросс-интервью паттерны CP-01–CP-14.</p><p>R01–R07 используются как основная независимая качественная выборка. SELF01 рассматривается отдельно и не используется для искусственного увеличения частоты наблюдений. При анализе различаются фактический опыт респондентов, предполагаемое будущее поведение и реакция на предложенную концепцию Portfolio.</p><p>Качественная выборка преимущественно описывает опыт студентов дизайн-направлений IThub СПб. Она позволяет глубоко исследовать эту часть основной аудитории, но не является равномерным представлением всех специальностей и курсов колледжа.</p></section>'+
+    '<section class="qa-section"><div class="qa-section-copy"><h2>Кросс-интервью паттерны CP-01–CP-14</h2><p>14 паттернов объединяют повторяющиеся проблемы, модели поведения, ценности и продуктовые ограничения, выявленные в разных блоках интервью. Каждый паттерн связан с исходными ответами и показывает его влияние на гипотезы, продуктовые решения и требования Portfolio.</p></div><div class="qa-pipeline" aria-label="Research pipeline">'+pipeline.map((item,index)=>'<span>'+esc(item)+(index<pipeline.length-1?'<i aria-hidden="true">→</i>':'')+'</span>').join('')+'</div><div class="qa-patterns">'+patterns.join('')+'</div></section>'+
+    '<section class="qa-risk"><span class="eyebrow">PRODUCT RISK</span><h2>Ключевой риск после интервью</h2><h3>'+esc(data.risk.title)+'</h3>'+paragraphs(data.risk.text)+'<div class="qa-risk-chain" aria-label="Launch-risk model">'+data.risk.chain.map((item,index)=>'<span>'+esc(item)+(index<data.risk.chain.length-1?'<i aria-hidden="true">→</i>':'')+'</span>').join('')+'</div><small>Launch-risk model, а не доказанная причинная модель.</small></section></div>';
+}
+
 async function saveResearchPlan(){
   if(!cloud){toast('Сначала подключи облачное рабочее пространство');return}
   if(dirty||saving||blocked){toast('Дождись сохранения или разреши конфликт в разделе синхронизации');return}
@@ -282,6 +298,138 @@ function formatText(type){const input=$('#documentBody');if(!input)return;const 
 function toggleReport(ref){if(!lookup(ref))return;state.reportItems=state.reportItems.includes(ref)?state.reportItems.filter(r=>r!==ref):[...state.reportItems,ref];changed();render();toast(state.reportItems.includes(ref)?'Материал добавлен в основной отчёт':'Материал убран из отчёта')}
 function archive(ref){const item=lookup(ref);if(!item)return;item.row.archived=!item.row.archived;item.row.updatedAt=new Date().toISOString();changed();render();toast(item.row.archived?'Материал перенесён в архив':'Материал восстановлен')}
 
+document.addEventListener('toggle',event=>{
+  const current=event.target;
+  if(!(current instanceof HTMLDetailsElement)||!current.classList.contains('qa-pattern'))return;
+  const trigger=current.querySelector(':scope > summary');
+  trigger?.setAttribute('aria-expanded',String(current.open));
+  const panel=document.getElementById(trigger?.getAttribute('aria-controls'));
+  if(panel)panel.hidden=!current.open;
+  const grid=current.closest('.qa-patterns');
+  if(current.open){
+    document.querySelectorAll('.qa-pattern[open]').forEach(other=>{if(other!==current)other.open=false;});
+    if(matchMedia('(min-width:1201px)').matches)showQualitativeSplit(grid);
+    else positionQualitativePanel(current);
+  }else if(grid?.classList.contains('qa-split')){
+    requestAnimationFrame(()=>{if(grid.isConnected&&!grid.querySelector('.qa-pattern[open]'))restoreQualitativeGrid(grid);});
+  }
+},true);
+
+function initQualitativePanels(){
+  document.querySelectorAll('.qa-page .qa-pattern').forEach(pattern=>{
+    const panel=pattern.querySelector('.qa-pattern-panel');
+    if(panel)pattern.after(panel);
+  });
+}
+let qualitativeTopObserver;
+function showQualitativeSplit(grid){
+  if(grid.classList.contains('qa-split'))return;
+  const focused=document.activeElement;
+  const patterns=Array.from(grid.querySelectorAll(':scope > .qa-pattern'));
+  const nav=document.createElement('div');
+  const pane=document.createElement('div');
+  nav.className='qa-split-nav';
+  pane.className='qa-split-pane';
+  patterns.forEach(pattern=>{
+    const panel=document.getElementById(pattern.querySelector('summary').getAttribute('aria-controls'));
+    nav.append(pattern);
+    if(panel){panel.style.gridColumn='';pane.append(panel);}
+  });
+  grid.append(nav,pane);
+  grid.classList.add('qa-split');
+  setupQualitativeReturn(grid);
+  if(focused?.matches('.qa-pattern summary'))focused.focus({preventScroll:true});
+}
+function setupQualitativeReturn(grid){
+  const anchor=document.createElement('span');
+  const button=document.createElement('button');
+  anchor.className='qa-return-anchor';
+  anchor.setAttribute('aria-hidden','true');
+  button.type='button';
+  button.className='qa-return-top';
+  button.setAttribute('aria-label','Вернуться к началу анализа');
+  button.setAttribute('aria-hidden','true');
+  button.tabIndex=-1;
+  button.innerHTML='<span aria-hidden="true">↑</span>';
+  button.addEventListener('click',()=>grid.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}));
+  grid.append(anchor,button);
+  const headerHeight=document.querySelector('.topbar')?.getBoundingClientRect().height||74;
+  qualitativeTopObserver?.disconnect();
+  qualitativeTopObserver=new IntersectionObserver(([entry])=>{
+    const visible=!entry.isIntersecting&&entry.boundingClientRect.top<headerHeight+12;
+    button.classList.toggle('is-visible',visible);
+    button.setAttribute('aria-hidden',String(!visible));
+    button.tabIndex=visible?0:-1;
+  },{rootMargin:`-${Math.ceil(headerHeight+12)}px 0px 0px 0px`,threshold:0});
+  qualitativeTopObserver.observe(anchor);
+}
+function restoreQualitativeGrid(grid){
+  if(!grid.classList.contains('qa-split'))return;
+  qualitativeTopObserver?.disconnect();
+  qualitativeTopObserver=null;
+  grid.querySelector('.qa-return-anchor')?.remove();
+  grid.querySelector('.qa-return-top')?.remove();
+  const focused=document.activeElement;
+  const patterns=Array.from(grid.querySelectorAll('.qa-split-nav > .qa-pattern'));
+  patterns.forEach(pattern=>{
+    const panel=document.getElementById(pattern.querySelector('summary').getAttribute('aria-controls'));
+    grid.append(pattern);
+    if(panel)grid.append(panel);
+  });
+  grid.querySelector('.qa-split-nav')?.remove();
+  grid.querySelector('.qa-split-pane')?.remove();
+  grid.classList.remove('qa-split');
+  if(focused?.matches('.qa-pattern summary'))focused.focus({preventScroll:true});
+}
+function positionQualitativePanel(pattern){
+  const grid=pattern.closest('.qa-patterns');
+  const patterns=Array.from(grid.querySelectorAll(':scope > .qa-pattern'));
+  const panel=document.getElementById(pattern.querySelector('summary').getAttribute('aria-controls'));
+  panel.style.gridColumn='';
+  const columns=getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+  const index=patterns.indexOf(pattern);
+  const rowEnd=Math.min(patterns.length-1,Math.floor(index/columns)*columns+columns-1);
+  patterns[rowEnd].after(panel);
+  panel.style.gridColumn=columns===1?'1':columns===2?'1 / span 2':(index%columns<2?'1 / span 2':'3 / span 2');
+}
+window.addEventListener('resize',()=>{
+  const grid=document.querySelector('.qa-page .qa-patterns');
+  const pattern=grid?.querySelector('.qa-pattern[open]');
+  if(!grid||!pattern)return;
+  if(matchMedia('(min-width:1201px)').matches)showQualitativeSplit(grid);
+  else{restoreQualitativeGrid(grid);positionQualitativePanel(pattern);}
+});
+
+function closeQualitativePattern(pattern,restoreFocus=false){
+  const trigger=pattern.querySelector(':scope > summary');
+  pattern.open=false;
+  trigger?.setAttribute('aria-expanded','false');
+  const panel=document.getElementById(trigger?.getAttribute('aria-controls'));
+  if(panel)panel.hidden=true;
+  if(restoreFocus)trigger?.focus({preventScroll:true});
+  requestAnimationFrame(()=>{
+    if(!pattern.isConnected)return;
+    const rect=trigger.getBoundingClientRect();
+    if(rect.bottom<0||rect.top>window.innerHeight){
+      trigger.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    }
+  });
+}
+document.addEventListener('click',event=>{
+  if(route.kind!=='researchAnalysis'||!event.target.closest)return;
+  const pattern=document.querySelector('.qa-page .qa-pattern[open]');
+  if(!pattern||window.getSelection()?.toString().trim())return;
+  if(event.target.closest('a,button,input,textarea,select,option,[contenteditable]:not([contenteditable="false"]),[role="button"],[role="link"],[role="checkbox"],[role="switch"],[role="textbox"],[role="combobox"],[role="menuitem"]'))return;
+  if(event.target.closest('.qa-pattern summary'))return;
+  if(matchMedia('(min-width:1201px)').matches&&event.target.closest('.qa-split-pane'))return;
+  closeQualitativePattern(pattern);
+});
+document.addEventListener('keydown',event=>{
+  if(route.kind!=='researchAnalysis'||event.key!=='Escape'||event.defaultPrevented)return;
+  const pattern=document.querySelector('.qa-page .qa-pattern[open]');
+  if(pattern&&!event.target.closest('dialog,[role="dialog"]')){event.preventDefault();closeQualitativePattern(pattern,true);}
+});
+
 document.addEventListener('click',event=>{
   const el=event.target.closest('[data-action]');if(!el){if(event.target.closest('#dialog a'))closeDialog();if(event.target.closest('.nav-link'))$('#sidebar').classList.remove('open');return;}
   const action=el.dataset.action;
@@ -329,8 +477,8 @@ function applyDeploy1Migration(){
   const researchTask=state.tasks.find(task=>task.id==='research-task'),seedResearchTask=seedState.tasks.find(task=>task.id==='research-task');
   if(researchTask&&seedResearchTask&&researchTask.updatedAt===v1Timestamp)Object.assign(researchTask,structuredClone(seedResearchTask));
   const analysisId='qualitative-analysis-cp-20261121';
-  if(!state.documents.some(doc=>doc.id===analysisId)){
-    const body='# Качественный анализ интервью\n\n## Выборка и массив\n\nВ источнике учтено 8 сессий: семь независимых участников R01–R07 и отдельная самооценка SELF01. R01 — внешний сравнительный участник. Набор Q1–Q120 содержит 960 ячеек «вопрос–ответ», а не 960 независимых наблюдений.\n\n## Паттерны CP-01–CP-14\n\n'+qualitativeAnalysis.patterns.map(p=>'### '+p.id+' — '+p.title+'\n\n'+p.statement+'\n\n- Вопросы: '+p.questions+'\n- Связанные требования: '+p.rf+'\n- Продуктовое следствие: '+p.decisionImpact+'\n- Основание: качественный синтез; числовая уверенность не присваивалась. Индивидуальные подтверждения и контрпримеры требуют закрытой respondent-level сверки.\n').join('\n')+'\n## Продуктовые границы\n\n'+qualitativeAnalysis.boundaries.map(([label,description])=>'- **'+label+'** '+description).join('\n')+'\n\n## Ограничения вывода\n\nКачественная концепт-валидация не доказывает retention, трудоустройство или конверсию в поступление. Отсутствующие связи «паттерн × участник» не интерпретируются как отсутствие свидетельства. Статусы гипотез и принятые решения автоматически не меняются.\n\n## Риск Cold Start\n\n'+qualitativeAnalysis.risk.statement+'\n\nОснования, типы риска и меры снижения требуют отдельной проверки; RF-ссылки: '+qualitativeAnalysis.risk.evidence+'.';
+  if(qualitativeAnalysis.schemaVersion<2&&!state.documents.some(doc=>doc.id===analysisId)){
+    const body='# Анализ глубинных интервью\n\n'+qualitativeAnalysis.patterns.map(p=>'## '+p.id+' — '+p.title+'\n\n'+p.lead+'\n\n**Итог:** '+p.conclusion).join('\n\n')+'\n\n## Cold Start\n\n'+qualitativeAnalysis.risk.text.join('\n\n');
     state.documents.unshift({id:analysisId,title:'Качественный анализ интервью',category:'Результаты и аналитика',status:'Рабочий вывод',source:'Агрегированная исследовательская сводка; без первичных ответов',body,links:[],archived:false,updatedAt:now});
   }
   state.reportItems=[...new Set([...state.reportItems,'documents:'+analysisId])];state.deploy1Revision=marker;return true;

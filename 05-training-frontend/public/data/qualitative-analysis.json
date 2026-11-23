@@ -1,7 +1,360 @@
 {
-  "schemaVersion": 1,
-  "updatedAt": "2026-11-21",
-  "milestone": "Агрегированный качественный синтез; respondent-level сверка не опубликована",
+  "schemaVersion": 2,
+  "patterns": [
+    {
+      "id": "CP-01",
+      "title": "Потеря дальнейшей жизни работы после учебной сдачи",
+      "lead": "Студенты регулярно создают реальные учебные и практические проекты, однако учебный процесс сам по себе не обеспечивает этим работам дальнейшую видимость, использование или развитие после сдачи.",
+      "essence": [
+        "Во время обучения у проекта есть понятный цикл: задача, выполнение, показ преподавателю, сдача через учебный канал или LXP и оценка. После выполнения образовательной функции дальнейшая судьба проекта становится значительно менее системной.",
+        "Сильные или лично значимые проекты иногда публикуют на Behance или Dprofile, используют в портфолио или продолжают развивать. Небольшие учебные работы часто остаются в LXP, Figma, локальных файлах или других хранилищах. Разрыв возникает между созданием работы, учебной сдачей и дальнейшей публичной и профессиональной жизнью."
+      ],
+      "formation": "Паттерн объединяет вопросы о практических проектах, действиях после сдачи, хранении, публикации, критериях выбора для портфолио и дальнейшем использовании. Особенно значимы Q17–Q18, Q31–Q40 и Q81–Q90.",
+      "quotes": [
+        {
+          "meta": "SELF01 · Q31 · дополнительное evidence",
+          "text": "Небольшие работы обычно отправляю преподавателю и загружаю на New LXP для получения оценки, после чего к ним не возвращаюсь. Более крупные и удачные проекты могу публиковать на Behance и показывать широкой аудитории."
+        }
+      ],
+      "synthesis": "Общий сценарий: создание → сдача → оценка → дальнейшая судьба зависит от инициативы автора. Отдельные сильные работы уже получают дальнейшую жизнь через внешние сервисы — Portfolio может сделать это поведение более системным.",
+      "evidenceType": "Actual behavior",
+      "strength": "Strong",
+      "hypothesis": "Работы теряют дальнейшую видимость после учебной сдачи — Подтверждена.",
+      "product": [
+        "Case как центральная сущность",
+        "самостоятельная публикация",
+        "долговременный опубликованный Case",
+        "Profile и Discovery"
+      ],
+      "boundary": "Portfolio должен давать работе дальнейшую жизнь, но не превращать публикацию каждого задания в обязательный этап. Не подтверждены auto-publish, перенос всех LXP assignments и превращение Portfolio в образовательную систему.",
+      "conclusion": "Core problem подтверждается: потенциальный контент уже создаётся внутри обучения, но дальнейшая жизнь значительной части работ не организована системно."
+    },
+    {
+      "id": "CP-02",
+      "title": "Фрагментированная экосистема хранения, публикации и discovery",
+      "lead": "Проекты студентов распределены между разными рабочими, учебными, публичными и личными сервисами, а единого пространства самостоятельной публикации и системного обнаружения работ и авторов внутри IThub нет.",
+      "essence": [
+        "Создание происходит в профессиональных инструментах; учебная сдача — через LXP, преподавателя и чаты; хранение — локально, в Figma, облачных документах и LXP; публичная демонстрация — через Behance, Dprofile, Telegram и социальные сети.",
+        "Нет единого слоя, где можно самостоятельно опубликовать Case, связать его с профилем, найти работу незнакомого автора IThub, перейти к автору и взаимодействовать вокруг Case."
+      ],
+      "quotes": [
+        {
+          "meta": "R03 · Q62",
+          "text": "Специальной площадкой для просмотра работ других студентов я не пользуюсь. Обычно смотрю их проекты, когда они сами показывают их мне на телефоне или компьютере."
+        },
+        {
+          "meta": "R05 · Q90",
+          "text": "Мне не хватает сервиса, где можно посмотреть работы студентов нашего колледжа."
+        }
+      ],
+      "synthesis": "Storage, Publishing и Discovery фрагментированы. Ценность Portfolio — public representation + author identity + discovery + interaction, а не ещё одно файловое хранилище.",
+      "evidenceType": "Actual behavior",
+      "strength": "Strong",
+      "hypothesis": "Нужна единая среда публикации и discovery — Подтверждена.",
+      "product": [
+        "Feed, Search, Filters",
+        "Directions и Tags",
+        "Public Case и Profile",
+        "переход Case → Author"
+      ],
+      "boundary": "Portfolio не заменяет Figma, Adobe, локальные файлы, LXP или Behance.",
+      "conclusion": "Нужен единый слой, превращающий разрозненные проекты в обнаруживаемую систему Cases и Authors внутри IThub."
+    },
+    {
+      "id": "CP-03",
+      "title": "Portfolio занимает отдельную социально-профессиональную нишу",
+      "lead": "Portfolio должен существовать как добровольная социально-профессиональная среда IThub, а не как расширение LXP, система сдачи заданий или копия внешнего универсального портфолио-сервиса.",
+      "essence": [
+        "Сервисы IThub преимущественно обслуживают образовательные и административные задачи. Portfolio занимает самостоятельную нишу: реальный проект → публичный Case → Author → Discovery → Interaction → Professional Presentation.",
+        "LXP обслуживает задания, дедлайны, сдачу, проверку и оценку; Portfolio — добровольную публикацию, долгосрочную жизнь работы, discovery, profile, social interaction, expert signal и professional presentation."
+      ],
+      "evidenceNotes": [
+        "Синтез Q91–Q100: различие образовательного контура и самостоятельного публичного представления проектов."
+      ],
+      "evidenceType": "Actual behavior",
+      "strength": "Strong",
+      "hypothesis": "Portfolio функционально отличается от LXP — Подтверждено. Отдельная ниша Portfolio — Подтверждена и уточнена.",
+      "product": [
+        "Core flow: Create Case → Publish → Discovery → Interaction",
+        "LXP может быть optional auth, data или import source"
+      ],
+      "boundary": "Portfolio ≠ LXP, LMS, система оценивания, обязательный этап обучения или официальный каталог отобранных работ.",
+      "conclusion": "Нужно отдельное пространство, в котором проекты получают публичную, социальную и профессиональную жизнь."
+    },
+    {
+      "id": "CP-04",
+      "title": "Author Autonomy & Ownership",
+      "lead": "Автор должен сохранять контроль над публикацией, содержанием, видимостью и жизненным циклом собственного Case. Возможность взаимодействовать с публичной работой не означает право управлять ею.",
+      "essence": [
+        "Case Management: Create, Edit, Publish, Archive, Delete, Visibility, Ownership, Coauthorship management.",
+        "Case Interaction: View, Like, Save, Comment, Follow, Feedback. Expert action: Teacher Award. Эти классы permissions не должны смешиваться."
+      ],
+      "evidenceNotes": [
+        "RF-115 и RF-117 поддерживают публичный просмотр при сохранении author control и разделение управления, взаимодействия и экспертного действия."
+      ],
+      "evidenceType": "Actual behavior + Concept validation",
+      "strength": "Strong",
+      "hypothesis": "Автор самостоятельно определяет публикацию — Подтверждено. Публичность при author control — Подтверждено.",
+      "product": [
+        "Author Autonomy как Product Principle",
+        "Permissions: Management / Interaction / Expert"
+      ],
+      "boundary": "Не добавлять Teacher approval, Grade gate, teacher CRUD над чужим Case, college ownership или automatic publication.",
+      "conclusion": "Author Autonomy — фундаментальный принцип permission model Portfolio."
+    },
+    {
+      "id": "CP-05",
+      "title": "Case как богатая центральная сущность",
+      "lead": "Профессиональная и демонстрационная ценность проекта может находиться не только в финальном результате: Case должен позволять раскрыть контекст, задачу, процесс, решения, инструменты, результат и индивидуальный вклад.",
+      "essence": [
+        "Для сложных, UX/UI, технических, командных и междисциплинарных проектов недостаточно одной финальной картинки.",
+        "Важно иметь возможность показать задачу, роль автора, ход работы, решения, инструменты, ограничения, результат и вклад участников."
+      ],
+      "evidenceNotes": [
+        "RF-103, RF-104, RF-105 и RF-110: ожидания от профессионального представления Case."
+      ],
+      "evidenceType": "Actual behavior",
+      "strength": "Strong",
+      "hypothesis": "Rich Case representation — Подтверждено.",
+      "product": [
+        "Flexible multimedia editor",
+        "title, cover, description, media, process, tasks, tools, links, attachments, contribution и coauthors"
+      ],
+      "boundary": "Rich Case ≠ rigid Case template. Возможности не должны становиться обязательной анкетой.",
+      "conclusion": "Case должен показывать не только результат, но и значимый контекст создания проекта."
+    },
+    {
+      "id": "CP-06",
+      "title": "Academic Value ≠ Public Value ≠ Professional Value",
+      "lead": "Академическая оценка проекта, его происхождение и его публичная или профессиональная ценность не являются одним и тем же показателем.",
+      "essence": [
+        "Высокая оценка не делает Case автоматически лучшим для публичного представления, а низкая или средняя не означает, что проект не показывает полезный навык.",
+        "RF-107 неоднозначен: часть студентов видит учебное происхождение как профессиональный барьер, часть не считает его проблемой."
+      ],
+      "evidenceNotes": [
+        "Q81–Q90, RF-103 и RF-107 показывают различие академической, публичной и профессиональной ценности."
+      ],
+      "evidenceType": "Actual behavior",
+      "strength": "Strong",
+      "hypothesis": "Grade не должен определять публикацию — Подтверждено.",
+      "product": [
+        "Grade не является publication gate, visibility gate, quality score или recommendation score",
+        "Teacher Award не равен Grade"
+      ],
+      "boundary": "Portfolio не является academic grading system.",
+      "conclusion": "Case может существовать в публичном и профессиональном контексте независимо от академической оценки."
+    },
+    {
+      "id": "CP-07",
+      "title": "Discovery и насмотренность — самостоятельная ценность",
+      "lead": "Просмотр чужих работ сам по себе создаёт ценность: студенты используют проекты других людей для насмотренности, вдохновения, поиска референсов и изучения решений.",
+      "essence": [
+        "Discovery нельзя сводить к поиску знакомого автора: интерес может начинаться с самой работы.",
+        "Сценарий увидеть → изучить → сохранить → вернуться позже полноценен даже без Comment или Follow."
+      ],
+      "quotes": [
+        {
+          "meta": "R03 · Q75",
+          "text": "Чаще всего я сохраняю интересные дизайны сайтов, которые могут пригодиться мне в качестве референсов. Иногда сохраняю проекты из-за отдельных деталей или визуальных решений, которые хотела бы использовать в своих будущих работах."
+        },
+        {
+          "meta": "R05 · Q74",
+          "text": "Очень часто. Если мне что-то нравится, я обычно ставлю лайк и сохраняю работу."
+        }
+      ],
+      "evidenceType": "Actual behavior",
+      "strength": "Strong",
+      "hypothesis": "Discovery как самостоятельная ценность — Подтверждена.",
+      "product": [
+        "Feed, Search, Filters и Recommendations",
+        "Save и Bookmarks; Save более intentional, чем Like"
+      ],
+      "boundary": "SELF01 не увеличивает частотность независимых наблюдений.",
+      "conclusion": "Discovery — core value Portfolio, а не вспомогательная навигация между Cases."
+    },
+    {
+      "id": "CP-08",
+      "title": "Case → Author → Networking",
+      "lead": "Интерес к Case может становиться точкой входа к автору, его профилю, другим проектам и дальнейшему профессиональному контакту.",
+      "essence": [
+        "Работа может быть discovery mechanism для человека.",
+        "Потенциальная цепочка: Case → Author → Profile → Other Cases → Follow / Contact → Networking / Professional Development."
+      ],
+      "quotes": [
+        {
+          "meta": "R05 · Q90",
+          "text": "Мне не хватает сервиса, где можно посмотреть работы студентов нашего колледжа. На мероприятиях я иногда вижу очень сильные проекты, но хотела бы знакомиться с ними подробнее и находить их авторов. В своей группе не всегда получается найти людей с близким стилем, направлением или уровнем работ."
+        }
+      ],
+      "evidenceNotes": [
+        "RF-101, RF-106, RF-109 и RF-112 поддерживают переход от Case к Author и возможному контакту."
+      ],
+      "evidenceType": "Actual behavior + Hypothetical behavior + Concept validation",
+      "strength": "Medium–Strong",
+      "hypothesis": "Case → Author discovery — Поддержано. Professional networking — Поддержано. Employment — Не проверено.",
+      "product": [
+        "author link, Profile и Other Cases",
+        "Follow и optional external contacts"
+      ],
+      "boundary": "Не добавлять Employer role, recruiter dashboard, job marketplace, hiring system или mandatory messenger. Трудоустройство не доказано.",
+      "conclusion": "Case может быть discovery entry point к проекту и человеку, стоящему за ним."
+    },
+    {
+      "id": "CP-09",
+      "title": "Social Signals ≠ Expert Signals",
+      "lead": "View, Like, Save, Comment и Teacher Award имеют разную семантику и не должны превращаться в единую универсальную метрику популярности или качества.",
+      "essence": [
+        "View фиксирует внимание; Like — лёгкая реакция; Save — намерение вернуться; Comment — более costly interaction с feedback; Teacher Award — экспертный сигнал."
+      ],
+      "quotes": [
+        {
+          "meta": "R03 · Q76",
+          "text": "В социальных сетях я практически не оставляю комментарии к чужим работам. Однако в личном общении часто делюсь своим мнением."
+        }
+      ],
+      "evidenceNotes": [
+        "Q74–Q80 показывают частые Like/Save и более редкие Comments."
+      ],
+      "evidenceType": "Actual behavior",
+      "strength": "Strong",
+      "hypothesis": "Social signals имеют разную ценность — Подтверждено.",
+      "product": [
+        "Не создавать один generic Reaction type",
+        "Recommendation logic может различать сигналы, но research не задаёт веса"
+      ],
+      "boundary": "Popularity ≠ Quality. Engagement ≠ Expertise. Teacher Award ≠ Like.",
+      "conclusion": "Социальный и экспертный слои связаны с Case, но сохраняют разную семантику."
+    },
+    {
+      "id": "CP-10",
+      "title": "Post-publication value",
+      "lead": "Публикация Case не является конечной точкой: внимание, feedback и реакции после публикации могут создавать дополнительную ценность и потенциальную причину вернуться на платформу.",
+      "essence": [
+        "Ожидаемая ценность после публикации связана с View, Like, Comment, Feedback, Teacher Award и вниманием к работе.",
+        "Потенциальная цепочка: Publish → Discovery → Reaction / Feedback → Notification → Potential Return."
+      ],
+      "evidenceNotes": [
+        "RF-118: обратная связь и реакции описываются как предполагаемый мотив продолжать публикацию. Это аналитический синтез, а не измеренный retention."
+      ],
+      "evidenceType": "Hypothetical behavior + Concept validation",
+      "strength": "Strong qualitative support / future effect unproven",
+      "hypothesis": "Social Reaction → Return — Частично подтверждена: связь поддержана качественно, реальный retention не измерен.",
+      "product": [
+        "Likes, Comments, Views и Teacher Award",
+        "Notifications"
+      ],
+      "boundary": "Нельзя утверждать, что retention loop доказан. Реакции — предполагаемый мотив возвращения, требующий проверки после запуска.",
+      "conclusion": "Post-publication interaction важен, но его фактическое влияние на retention остаётся гипотезой."
+    },
+    {
+      "id": "CP-11",
+      "title": "Expert feedback и Teacher Award",
+      "lead": "Компетентная экспертная реакция имеет другую ценность и семантику, чем обычная социальная реакция или академическая оценка.",
+      "essence": [
+        "Feedback преподавателя существует в образовании, но academic feedback и публичный expert signal различны.",
+        "Teacher Award — отдельный сигнал профессионального признания опубликованного Case; он не заменяет Grade, Comment или Like."
+      ],
+      "quotes": [
+        {
+          "meta": "R03 · Q85",
+          "text": "Обычно я получаю обратную связь непосредственно на занятиях от преподавателя либо в комментариях к заданию на образовательной платформе LXP."
+        }
+      ],
+      "evidenceType": "Actual behavior + Product interpretation",
+      "strength": "Strong",
+      "hypothesis": "Ценность компетентного feedback подтверждена; Teacher Award — ранее принятое product decision, поддержанное исследованием.",
+      "product": [
+        "Teacher Award относится к опубликованному Case и назначается компетентным Teacher",
+        "Не меняет ownership, не даёт Edit/Delete, не является Grade или approval"
+      ],
+      "boundary": "Teacher = Author + Expert. Teacher ≠ Controller чужого Case.",
+      "conclusion": "Expert recognition существует отдельно от social popularity и academic grading."
+    },
+    {
+      "id": "CP-12",
+      "title": "Coauthorship нужен, но не определяет MVP",
+      "lead": "Командные проекты требуют возможности показать участников и их вклад, но qualitative research не обосновывает необходимость сложной shared-ownership системы в первой версии продукта.",
+      "essence": [
+        "При публичном представлении командного проекта важно показать участников, роль, задачи и вклад. Ответы различаются по желаемой глубине механики."
+      ],
+      "quotes": [
+        {
+          "meta": "R01 · Q59",
+          "text": "Если один из соавторов захочет убрать совместный проект из своего портфолио, проект должен исчезнуть только из его профиля, оставаясь доступным у остальных участников."
+        }
+      ],
+      "evidenceNotes": [
+        "Синтез Q41–Q60 и Q117 поддерживает отметку соавторов и связь с ролью или вкладом; сложная shared ownership не подтверждена."
+      ],
+      "evidenceType": "Actual behavior + Hypothetical behavior",
+      "strength": "Medium–Strong",
+      "hypothesis": "Базовое coauthorship — Поддержано. Сложный shared ownership в MVP — Не подтверждён.",
+      "product": [
+        "linking coauthors",
+        "role/contribution description"
+      ],
+      "boundary": "Не подтверждены contribution score, automatic calculation, complex verification и full collaborative ownership workflow. Full coauthorship — Post-MVP.",
+      "conclusion": "Нужно корректно представлять командную работу, не перегружая MVP совместным владением."
+    },
+    {
+      "id": "CP-13",
+      "title": "Professional History формируется ещё во время обучения",
+      "lead": "Студент может уже иметь проекты, практический, коммерческий или стажировочный опыт, но ещё не иметь сформированного портфолио. Portfolio может постепенно превращать эти разрозненные результаты в профессиональную историю.",
+      "essence": [
+        "Учебные и реальные проекты, стажировки, фриланс, коммерческий и командный опыт могут существовать до собранного портфолио.",
+        "Portfolio поддерживает накопление профессиональной истории в процессе обучения, а не только финальное размещение готового портфолио."
+      ],
+      "evidenceNotes": [
+        "RF-101–RF-110: отсутствие текущего портфолио может сочетаться с практическим опытом и намерением собрать его позднее."
+      ],
+      "evidenceType": "Actual behavior",
+      "strength": "Strong",
+      "hypothesis": "Professional History — новая / усиленная value hypothesis. Статус: В исследовании / value proposition strengthened.",
+      "product": [
+        "Возникает из Profile + Cases + chronology + tools + contribution + experience",
+        "Не создавать entity Professional History"
+      ],
+      "boundary": "Portfolio ≠ CV builder, HR system или job board.",
+      "conclusion": "Professional History — интерпретация ценности Profile и Case, а не новый модуль."
+    },
+    {
+      "id": "CP-14",
+      "title": "External / Admissions Value",
+      "lead": "Реальные работы студентов могут помогать внешней аудитории лучше понимать и сравнивать образовательные направления, но влияние Portfolio на заявки, поступление и admissions conversion пока не доказано.",
+      "essence": [
+        "Фактический пример R06 показывает использование реальных работ студентов IThub при выборе между близкими направлениями. Сценарий произошёл независимо от Portfolio — это actual behavior, а не только concept-test.",
+        "Потенциальная цепочка: направления → реальные работы → сравнение результатов обучения → понимание различий → более осознанный выбор."
+      ],
+      "evidenceNotes": [
+        "R06 · Q3: аналитическое evidence использования работ при выборе направления; дословная цитата в подтверждённом фрагменте не опубликована.",
+        "Q116 поддерживает комфорт просмотра работ абитуриентами, преподавателями и работодателями."
+      ],
+      "evidenceType": "Actual behavior + Concept validation",
+      "strength": "Medium",
+      "hypothesis": "Работы могут помогать сравнивать направления — Частично подтверждено. Влияние на поступление и conversion — Не проверено.",
+      "product": [
+        "Public Guest и browsing without authentication",
+        "Directions, Filters и Public Case"
+      ],
+      "boundary": "Не создавать Applicant role, applicant account, admissions backend или отдельную funnel. Entry point, доменная архитектура и admissions effect остаются открыты.",
+      "conclusion": "Admissions — перспективный внешний value scenario, но не доказанный conversion effect."
+    }
+  ],
+  "risk": {
+    "title": "Cold Start",
+    "text": [
+      "Главный launch risk, выявленный после интервью, связан не с отсутствием потенциального контента. Студенты уже создают проекты в процессе обучения. Риск возникает на следующем переходе: существующие проекты могут не превратиться в опубликованные качественные Cases, без достаточного количества Cases discovery будет слабым, а без discovery и социальной реакции снизится мотивация публиковаться и возвращаться.",
+      "Поэтому Cold Start рассматривается как проблема activation, publication и формирования первоначального сообщества, а не как недостаток функций Portfolio.",
+      "Из этого риска не следует необходимость добавлять новые механики в MVP. До запуска необходимо отдельно разработать initial content strategy, привлечение первых авторов, участие преподавателей, внутреннее продвижение и сценарий формирования первоначальной активности."
+    ],
+    "chain": [
+      "Existing projects",
+      "Published Cases",
+      "Discovery",
+      "Reactions",
+      "Motivation to continue"
+    ]
+  },
   "sample": {
     "sessionCount": 8,
     "independentCount": 7,
@@ -9,203 +362,5 @@
     "questions": 120,
     "answers": 960,
     "note": "R01–R07 — независимые участники; SELF01 — отдельная самооценка. R01 — внешний сравнительный участник. Ответы — ячейки данных, а не независимые наблюдения."
-  },
-  "patterns": [
-    {
-      "id": "CP-01",
-      "title": "Потеря дальнейшей жизни работы после учебной сдачи",
-      "statement": "Учебный процесс не обеспечивает дальнейшую видимость и использование значительной части созданных проектов.",
-      "evidenceType": "actual",
-      "questions": "Q17, Q31, Q81–Q90",
-      "rf": "RF-81–RF-87",
-      "decisionImpact": "Problem / Post-publication value",
-      "requirementsImpact": "Подтверждает проблему и долгосрочное хранение Case",
-      "evidenceNote": "Кросс-блочный качественный синтез; индивидуальная трассировка не опубликована"
-    },
-    {
-      "id": "CP-02",
-      "title": "Фрагментированная экосистема хранения, публикации и discovery",
-      "statement": "Нет единого пространства для самостоятельной публикации, долгосрочного хранения и системного обнаружения работ и авторов IThub.",
-      "evidenceType": "actual",
-      "questions": "Q18, Q21–Q25, Q61–Q63, Q91–Q100",
-      "rf": "RF-92, RF-93",
-      "decisionImpact": "Discovery is Core",
-      "requirementsImpact": "Подтверждает Guest discovery, feed и профиль автора",
-      "evidenceNote": "Кросс-блочный качественный синтез; индивидуальная трассировка не опубликована"
-    },
-    {
-      "id": "CP-03",
-      "title": "Portfolio занимает отдельную социально-профессиональную нишу",
-      "statement": "Portfolio соединяет Cases, Authors, Discovery, interaction и professional presentation; не заменяет LXP, внешние портфолио-площадки или официальный сайт.",
-      "evidenceType": "synthesis",
-      "questions": "Q91–Q100",
-      "rf": "RF-91, RF-94, RF-96",
-      "decisionImpact": "Product boundary",
-      "requirementsImpact": "NO CHANGE: сохраняется отдельная ниша",
-      "evidenceNote": "Кросс-блочный качественный синтез; индивидуальная трассировка не опубликована"
-    },
-    {
-      "id": "CP-04",
-      "title": "Author Autonomy & Ownership",
-      "statement": "Управление Case, взаимодействие и Expert signal — разные permission layers. Взаимодействие не даёт права управлять Case.",
-      "evidenceType": "actual + decision",
-      "questions": "Q31–Q40, Q51–Q60, Q118",
-      "rf": "RF-95, RF-117",
-      "decisionImpact": "Author Autonomy",
-      "requirementsImpact": "Уточняет EDIT-08/09, VIS-03, PROF-17, TEAM-OWN-01",
-      "evidenceNote": "Evidence + approved product decision"
-    },
-    {
-      "id": "CP-05",
-      "title": "Case как богатая центральная сущность",
-      "statement": "Case может показывать контекст, результат, процесс, решения, задачи, инструменты, вклад и медиа без обязательной универсальной анкеты.",
-      "evidenceType": "actual",
-      "questions": "Q11–Q14, Q101–Q110",
-      "rf": "RF-05, RF-104, RF-110",
-      "decisionImpact": "Case model",
-      "requirementsImpact": "Подтверждает EDIT-02, CASE-TOOLS-01, TEAM-ROLE-01",
-      "evidenceNote": "Cross-block synthesis"
-    },
-    {
-      "id": "CP-06",
-      "title": "Academic Value ≠ Public Value ≠ Professional Value",
-      "statement": "Оценка, завершённость и внешнее одобрение не определяют право автора публиковать Case.",
-      "evidenceType": "actual + decision",
-      "questions": "Q81–Q90, Q101–Q110",
-      "rf": "RF-103, RF-107",
-      "decisionImpact": "Publication boundary",
-      "requirementsImpact": "Подтверждает EDIT-09, VIS-03 и Author Autonomy",
-      "evidenceNote": "Cross-block synthesis"
-    },
-    {
-      "id": "CP-07",
-      "title": "Discovery и насмотренность — самостоятельная ценность",
-      "statement": "Просмотр чужих работ поддерживает inspiration, references, анализ решений и профессиональное развитие.",
-      "evidenceType": "actual",
-      "questions": "Q61–Q75",
-      "rf": "RF-73",
-      "decisionImpact": "Discovery value",
-      "requirementsImpact": "Подтверждает GUEST-01/02 и PROF-13/15",
-      "evidenceNote": "Independent sample; SELF01 не увеличивает частотность"
-    },
-    {
-      "id": "CP-08",
-      "title": "Case → Author → Networking",
-      "statement": "Case может вести к профилю, другим работам, подписке или контакту; employment outcome не доказан.",
-      "evidenceType": "actual + hypothetical",
-      "questions": "Q61–Q73, Q111–Q120",
-      "rf": "RF-72, RF-112",
-      "decisionImpact": "Case → Author",
-      "requirementsImpact": "Подтверждает переход Case → Profile; networking остаётся гипотезой",
-      "evidenceNote": "Actual discovery и hypothetical outcome разделены"
-    },
-    {
-      "id": "CP-09",
-      "title": "Social Signals ≠ Expert Signals",
-      "statement": "View, Like, Save, Comment и Teacher Award имеют разную семантику; popularity не равна quality.",
-      "evidenceType": "actual + decision",
-      "questions": "Q74–Q80",
-      "rf": "RF-74, RF-77, RF-78",
-      "decisionImpact": "Signal semantics",
-      "requirementsImpact": "Подтверждает GUEST-06, VIEW-01, FEED-01–03, PROF-17",
-      "evidenceNote": "Views не трактуются как quality"
-    },
-    {
-      "id": "CP-10",
-      "title": "Post-publication value",
-      "statement": "После публикации возможны discovery, реакции, feedback и expert recognition; это поддерживаемая модель, но не доказанный retention loop.",
-      "evidenceType": "concept validation",
-      "questions": "Q119",
-      "rf": "RF-118",
-      "decisionImpact": "Social Reaction → Return",
-      "requirementsImpact": "Уточняет ENG/PERS evidence; коэффициенты не выводятся",
-      "evidenceNote": "Stated intention, not measured retention"
-    },
-    {
-      "id": "CP-11",
-      "title": "Expert feedback / Teacher Award",
-      "statement": "Teacher Award — отдельный компетентный Expert signal без ownership, grade или publication approval.",
-      "evidenceType": "actual + decision",
-      "questions": "Q77–Q78, Q81–Q90",
-      "rf": "RF-77, RF-81–RF-87",
-      "decisionImpact": "Teacher role",
-      "requirementsImpact": "Подтверждает PROF-17 и FEED-02",
-      "evidenceNote": "Не расширяет CRUD преподавателя"
-    },
-    {
-      "id": "CP-12",
-      "title": "Coauthorship",
-      "statement": "Ценность совместного авторства поддержана, но полноценная модель остаётся Post-MVP; contribution score не вводится.",
-      "evidenceType": "actual + decision",
-      "questions": "Q41–Q60, Q117",
-      "rf": "RF-116",
-      "decisionImpact": "Post-MVP boundary",
-      "requirementsImpact": "Подтверждает TEAM-ROLE-01/02, TEAM-OWN-01; TEAM-SCORE-01 не реализуется",
-      "evidenceNote": "Support does not change MVP1"
-    },
-    {
-      "id": "CP-13",
-      "title": "Professional History",
-      "statement": "Накопление Cases, Profile, tools, contribution и chronology формирует профессиональную историю; это value layer, не новая entity.",
-      "evidenceType": "synthesis",
-      "questions": "Q101–Q110",
-      "rf": "RF-102, RF-108, RF-109",
-      "decisionImpact": "Value proposition",
-      "requirementsImpact": "Уточняет Profile/Case implications без новой сущности",
-      "evidenceNote": "Interpretation grounded in qualitative evidence"
-    },
-    {
-      "id": "CP-14",
-      "title": "External / Admissions Value",
-      "statement": "Работы студентов могут помогать понять направления обучения; влияние на заявки и поступление не измерено, Applicant role не создаётся.",
-      "evidenceType": "actual + open outcome",
-      "questions": "Q3",
-      "rf": "RF-02, RF-08",
-      "decisionImpact": "Admissions Discovery",
-      "requirementsImpact": "Подтверждает external read value; conversion остаётся OPEN",
-      "evidenceNote": "Требует закрытой сверки индивидуального основания; не трактуется как оценка поступления"
-    }
-  ],
-  "boundaries": [
-    [
-      "LXP",
-      "Учебный процесс: задания, сдача, feedback, оценка"
-    ],
-    [
-      "Behance / Dprofile",
-      "Внешние универсальные портфолио и inspiration-площадки"
-    ],
-    [
-      "Официальный сайт IThub",
-      "Институциональная информация и выборочный показ работ"
-    ],
-    [
-      "Employment",
-      "Возможный downstream outcome; эффект не доказан"
-    ],
-    [
-      "Mentoring",
-      "Не входит в подтверждённый scope"
-    ]
-  ],
-  "valueModel": [
-    "Project",
-    "Case",
-    "Publish",
-    "Discovery",
-    "Interaction / Expert feedback",
-    "Professional History",
-    "Networking / opportunities"
-  ],
-  "risk": {
-    "id": "RISK-COLD-START",
-    "title": "Cold Start",
-    "statement": "Существующие проекты могут не превратиться в добровольно опубликованные качественные Cases; слабый Discovery и малое взаимодействие снижают мотивацию публиковать и возвращаться.",
-    "types": [
-      "Activation risk",
-      "Publication risk",
-      "Community risk"
-    ],
-    "evidence": "RF-07, RF-113"
   }
 }
