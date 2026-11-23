@@ -128,3 +128,17 @@ dialog{border:1px solid var(--line);border-radius:18px;padding:0;max-height:85vh
 .qa-page .qa-pattern-panel header p{font-size:15px}
 @media(max-width:1100px){.qa-page .qa-patterns{max-width:560px}}
 @media(max-width:620px){.qa-page .qa-patterns{max-width:360px}.qa-page .qa-pattern summary>b{font-size:14px}.qa-page .qa-pattern-panel{padding:22px 18px}.qa-page .qa-pattern-panel h3{font-size:26px}}
+
+/* One clean silhouette and a separate inset contour on every folder. */
+.qa-page .qa-folder-shape>use{fill:var(--blue);stroke:none}
+.qa-page .qa-folder-inset{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);z-index:-1;pointer-events:none;overflow:visible}
+.qa-page .qa-pattern[open] summary>.qa-folder-inset{transform:none}
+.qa-page .qa-folder-inset use{fill:none;stroke:rgba(255,255,255,.2);stroke-width:1;vector-effect:non-scaling-stroke}
+.qa-page .qa-pattern summary:before,.qa-page .qa-pattern[open] summary:before{inset:0;border-radius:22px}
+.qa-page .qa-patterns{width:100%;margin-inline:auto}
+.qa-page h1,.qa-page h2,.qa-page h3,.qa-page h4,.qa-page .qa-pattern summary>b{text-wrap:balance}
+.qa-page .qa-intro p,.qa-page .qa-section-copy p,.qa-page .qa-risk>p{max-width:78ch;text-wrap:pretty}
+.qa-page .qa-pattern-panel p,.qa-page .qa-pattern-panel li,.qa-page .qa-quote blockquote{text-wrap:pretty}
+.qa-page .qa-folder-meta span{overflow-wrap:normal;word-break:normal;min-width:0}
+.qa-page .qa-folder-meta span:first-child{flex:1 1 52%}
+.qa-page .qa-folder-meta span:last-child{flex:0 1 48%}
