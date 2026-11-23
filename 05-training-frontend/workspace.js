@@ -321,6 +321,7 @@ function initQualitativePanels(){
     if(panel)pattern.after(panel);
   });
 }
+let qualitativeTopObserver;
 function showQualitativeSplit(grid){
   if(grid.classList.contains('qa-split'))return;
   const focused=document.activeElement;
@@ -336,10 +337,38 @@ function showQualitativeSplit(grid){
   });
   grid.append(nav,pane);
   grid.classList.add('qa-split');
+  setupQualitativeReturn(grid);
   if(focused?.matches('.qa-pattern summary'))focused.focus({preventScroll:true});
+}
+function setupQualitativeReturn(grid){
+  const anchor=document.createElement('span');
+  const button=document.createElement('button');
+  anchor.className='qa-return-anchor';
+  anchor.setAttribute('aria-hidden','true');
+  button.type='button';
+  button.className='qa-return-top';
+  button.setAttribute('aria-label','Вернуться к началу анализа');
+  button.setAttribute('aria-hidden','true');
+  button.tabIndex=-1;
+  button.innerHTML='<span aria-hidden="true">↑</span>';
+  button.addEventListener('click',()=>grid.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}));
+  grid.append(anchor,button);
+  const headerHeight=document.querySelector('.topbar')?.getBoundingClientRect().height||74;
+  qualitativeTopObserver?.disconnect();
+  qualitativeTopObserver=new IntersectionObserver(([entry])=>{
+    const visible=!entry.isIntersecting&&entry.boundingClientRect.top<headerHeight+12;
+    button.classList.toggle('is-visible',visible);
+    button.setAttribute('aria-hidden',String(!visible));
+    button.tabIndex=visible?0:-1;
+  },{rootMargin:`-${Math.ceil(headerHeight+12)}px 0px 0px 0px`,threshold:0});
+  qualitativeTopObserver.observe(anchor);
 }
 function restoreQualitativeGrid(grid){
   if(!grid.classList.contains('qa-split'))return;
+  qualitativeTopObserver?.disconnect();
+  qualitativeTopObserver=null;
+  grid.querySelector('.qa-return-anchor')?.remove();
+  grid.querySelector('.qa-return-top')?.remove();
   const focused=document.activeElement;
   const patterns=Array.from(grid.querySelectorAll('.qa-split-nav > .qa-pattern'));
   patterns.forEach(pattern=>{
