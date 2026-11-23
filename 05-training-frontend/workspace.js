@@ -95,7 +95,7 @@ function nav(){
   $('#navigation').innerHTML=groups.map(([title,items])=>'<div class="nav-label">'+title+'</div>'+items.map(kind=>'<a class="nav-link '+(route.kind===kind||(['researchPlan','researchInterviews','researchSurveys','researchAnalysis'].includes(route.kind)&&kind==='researchHub')?'active':'')+'" href="'+uri(kind)+'" '+(route.kind===kind?'aria-current="page"':'')+'>'+icon(M.config[kind]?.icon||({home:'home',researchHub:'search',crud:'lock',report:'report',archive:'archive',sync:'upload'})[kind])+'<span>'+titleFor(kind)+'</span><span class="nav-number">'+(M.kinds.includes(kind)?alive(kind).length:kind==='report'?state.reportItems.filter(r=>lookup(r)&&!lookup(r).row.archived).length:kind==='sync'&&cloud?proposals.filter(p=>p.status==='pending').length:'')+'</span></a>').join('')).join('');
 }
 function breadcrumbs(){const row=currentRecord();$('#breadcrumbs').innerHTML='<a class="root-crumb" href="'+uri('home')+'">Рабочее пространство</a><span class="root-crumb">/</span>'+(row?'<a href="'+uri(route.kind)+'">'+titleFor(route.kind)+'</a><span>/</span><b>'+esc(M.recordTitle(route.kind,row))+'</b>':'<b>'+titleFor(route.kind)+'</b>');$('#backButton').disabled=route.kind==='home'&&!(history.state?.discoveryDepth>0)}
-function render(){if(!state)return;route=parseRoute();nav();breadcrumbs();let html;const row=currentRecord();if(route.id&&M.kinds.includes(route.kind))html=row?detailView(route.kind,row):empty('Материал не найден. Он мог быть удалён из импортированной копии.',button('Вернуться к разделу','parent'));else if(route.kind==='home')html=homeView();else if(route.kind==='researchHub')html=researchHubView();else if(route.kind==='researchPlan')html=researchPlanView();else if(route.kind==='researchInterviews')html=researchInterviewsView();else if(route.kind==='researchAnalysis')html=qualitativeAnalysisView();else if(route.kind==='researchSurveys')html=researchSubsectionView(route.kind);else if(route.kind==='matrix')html=matrixView();else if(route.kind==='crud')html=crudView();else if(route.kind==='report')html=reportView();else if(route.kind==='archive')html=archiveView();else if(route.kind==='sync')html=syncView();else html=collectionView(route.kind);$('#content').innerHTML=html;if(route.kind==='researchAnalysis')bindQualitativeTypography($('#content .qa-page'));}
+function render(){if(!state)return;route=parseRoute();nav();breadcrumbs();let html;const row=currentRecord();if(route.id&&M.kinds.includes(route.kind))html=row?detailView(route.kind,row):empty('Материал не найден. Он мог быть удалён из импортированной копии.',button('Вернуться к разделу','parent'));else if(route.kind==='home')html=homeView();else if(route.kind==='researchHub')html=researchHubView();else if(route.kind==='researchPlan')html=researchPlanView();else if(route.kind==='researchInterviews')html=researchInterviewsView();else if(route.kind==='researchAnalysis')html=qualitativeAnalysisView();else if(route.kind==='researchSurveys')html=researchSubsectionView(route.kind);else if(route.kind==='matrix')html=matrixView();else if(route.kind==='crud')html=crudView();else if(route.kind==='report')html=reportView();else if(route.kind==='archive')html=archiveView();else if(route.kind==='sync')html=syncView();else html=collectionView(route.kind);$('#content').innerHTML=html;if(route.kind==='researchAnalysis'){bindQualitativeTypography($('#content .qa-page'));initQualitativePanels();}}
 
 function findResearchPlan(){return state.documents.find(d=>d.id===M.researchPlan.id||d.title.trim().toLocaleLowerCase('ru-RU')===M.researchPlan.title.toLocaleLowerCase('ru-RU'))}
 function researchHubView(){
@@ -160,7 +160,7 @@ function qualitativeAnalysisView(){
   const evidence=p=>(p.quotes||[]).map(q=>'<figure class="qa-quote"><figcaption>'+esc(q.meta)+'</figcaption><blockquote>'+esc(q.text)+'</blockquote></figure>').join('')+(p.evidenceNotes?.length?'<div class="qa-evidence-notes">'+paragraphs(p.evidenceNotes)+'</div>':'');
   const patterns=data.patterns.map(p=>{
     const panel='qa-panel-'+p.id.toLowerCase();
-    const markup='<details class="qa-pattern" name="qa-patterns"><summary aria-expanded="false" aria-controls="'+panel+'"><svg class="qa-folder-shape" viewBox="0 0 400 380" preserveAspectRatio="none" aria-hidden="true"><defs><path id="'+panel+'-shape" d="M 0,106 Q 0,76 31,76 H 151 Q 160,76 168,85 L 188,106 Q 193,111 201,111 H 369 Q 400,111 400,141 V 349 Q 400,380 369,380 H 31 Q 0,380 0,349 Z"/><clipPath id="'+panel+'-clip"><use href="#'+panel+'-shape"/></clipPath></defs><use href="#'+panel+'-shape"/></svg><svg class="qa-folder-inset" viewBox="0 0 400 380" preserveAspectRatio="none" aria-hidden="true"><use href="#'+panel+'-shape"/></svg><span class="qa-pattern-id">'+esc(p.id)+'</span><b>'+esc(p.title)+'</b><span class="qa-folder-meta"><span>'+esc(p.evidenceType)+'</span><span>'+esc(p.strength)+'</span></span></summary><article hidden class="qa-pattern-panel" id="'+panel+'"><header><span class="qa-pattern-id">'+esc(p.id)+'</span><h3>'+esc(p.title)+'</h3><p>'+esc(p.lead)+'</p></header><section><h4>Суть паттерна</h4>'+paragraphs(p.essence)+'</section>'+(p.formation?'<section><h4>Как сформировался паттерн</h4><p>'+esc(p.formation)+'</p></section>':'')+'<section><h4>Evidence</h4>'+evidence(p)+'</section>'+(p.synthesis?'<section><h4>Cross-interview synthesis</h4><p>'+esc(p.synthesis)+'</p></section>':'')+'<div class="qa-evidence-meta"><div><span>Evidence type</span><strong>'+esc(p.evidenceType)+'</strong></div><div><span>Evidence strength</span><strong>'+esc(p.strength)+'</strong></div></div><section><h4>Hypothesis impact</h4><p>'+esc(p.hypothesis)+'</p></section><section><h4>Product impact</h4>'+list(p.product)+'</section><section><h4>Граница интерпретации</h4><p>'+esc(p.boundary)+'</p></section><section class="qa-conclusion"><h4>Итог</h4><p>'+esc(p.conclusion)+'</p></section></article></details>';
+    const markup='<details class="qa-pattern" name="qa-patterns"><summary aria-expanded="false" aria-controls="'+panel+'"><svg class="qa-folder-shape" viewBox="0 0 400 380" preserveAspectRatio="none" aria-hidden="true"><defs><path id="'+panel+'-shape" d="M 0,106 Q 0,76 31,76 H 151 Q 160,76 168,85 L 188,106 Q 193,111 201,111 H 369 Q 400,111 400,141 V 349 Q 400,380 369,380 H 31 Q 0,380 0,349 Z"/><clipPath id="'+panel+'-clip"><use href="#'+panel+'-shape"/></clipPath><mask id="'+panel+'-outline" maskUnits="userSpaceOnUse" x="-10" y="-10" width="420" height="400"><use href="#'+panel+'-shape" fill="none" stroke="white" stroke-width="7" vector-effect="non-scaling-stroke"/><use href="#'+panel+'-shape" fill="none" stroke="black" stroke-width="5" vector-effect="non-scaling-stroke"/></mask></defs><use href="#'+panel+'-shape" fill="var(--blue)"/><use href="#'+panel+'-shape" fill="white" opacity=".2" clip-path="url(#'+panel+'-clip)" mask="url(#'+panel+'-outline)"/></svg><span class="qa-pattern-id">'+esc(p.id)+'</span><b>'+esc(p.title)+'</b><span class="qa-folder-meta"><span>'+esc(p.evidenceType)+'</span><span>'+esc(p.strength)+'</span></span></summary><article hidden class="qa-pattern-panel" id="'+panel+'"><header><span class="qa-pattern-id">'+esc(p.id)+'</span><h3>'+esc(p.title)+'</h3><p>'+esc(p.lead)+'</p></header><section><h4>Суть паттерна</h4>'+paragraphs(p.essence)+'</section>'+(p.formation?'<section><h4>Как сформировался паттерн</h4><p>'+esc(p.formation)+'</p></section>':'')+'<section><h4>Evidence</h4>'+evidence(p)+'</section>'+(p.synthesis?'<section><h4>Cross-interview synthesis</h4><p>'+esc(p.synthesis)+'</p></section>':'')+'<div class="qa-evidence-meta"><div><span>Evidence type</span><strong>'+esc(p.evidenceType)+'</strong></div><div><span>Evidence strength</span><strong>'+esc(p.strength)+'</strong></div></div><section><h4>Hypothesis impact</h4><p>'+esc(p.hypothesis)+'</p></section><section><h4>Product impact</h4>'+list(p.product)+'</section><section><h4>Граница интерпретации</h4><p>'+esc(p.boundary)+'</p></section><section class="qa-conclusion"><h4>Итог</h4><p>'+esc(p.conclusion)+'</p></section></article></details>';
     return markup;
   });
   const pipeline=['Ответы респондентов','Исследовательские выводы','Кросс-интервью паттерны','Гипотезы','Продуктовые решения'];
@@ -310,16 +310,22 @@ document.addEventListener('toggle',event=>{
   document.querySelectorAll('.qa-pattern[open]').forEach(other=>{if(other!==current)other.open=false;});
 },true);
 
+function initQualitativePanels(){
+  document.querySelectorAll('.qa-page .qa-pattern').forEach(pattern=>{
+    const panel=pattern.querySelector('.qa-pattern-panel');
+    if(panel)pattern.after(panel);
+  });
+}
 function positionQualitativePanel(pattern){
-  const grid=pattern.closest('.qa-patterns').getBoundingClientRect();
-  const anchor=pattern.querySelector('summary').getBoundingClientRect();
-  const panel=pattern.querySelector('.qa-pattern-panel');
-  const gap=parseFloat(getComputedStyle(pattern.parentElement).columnGap)||0;
-  const columns=getComputedStyle(pattern.parentElement).gridTemplateColumns.split(' ').length;
-  const width=columns>1?anchor.width*2+gap:anchor.width;
-  const left=Math.min(anchor.left,grid.right-width);
-  panel.style.width=width+'px';
-  panel.style.marginLeft=(left-anchor.left)+'px';
+  const grid=pattern.closest('.qa-patterns');
+  const patterns=Array.from(grid.querySelectorAll(':scope > .qa-pattern'));
+  const panel=document.getElementById(pattern.querySelector('summary').getAttribute('aria-controls'));
+  panel.style.gridColumn='';
+  const columns=getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+  const index=patterns.indexOf(pattern);
+  const rowEnd=Math.min(patterns.length-1,Math.floor(index/columns)*columns+columns-1);
+  patterns[rowEnd].after(panel);
+  panel.style.gridColumn=columns===1?'1':columns===2?'1 / span 2':(index%columns<2?'1 / span 2':'3 / span 2');
 }
 window.addEventListener('resize',()=>{
   const pattern=document.querySelector('.qa-page .qa-pattern[open]');

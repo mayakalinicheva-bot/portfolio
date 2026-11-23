@@ -142,3 +142,29 @@ dialog{border:1px solid var(--line);border-radius:18px;padding:0;max-height:85vh
 .qa-page .qa-folder-meta span{overflow-wrap:normal;word-break:normal;min-width:0}
 .qa-page .qa-folder-meta span:first-child{flex:1 1 52%}
 .qa-page .qa-folder-meta span:last-child{flex:0 1 48%}
+
+/* Research analysis: one folder path and a shared responsive grid. */
+.qa-page{width:100%;max-width:1500px;margin-inline:auto}
+.qa-page .qa-intro,.qa-page .qa-section-copy,.qa-page .qa-risk{max-width:780px}
+.qa-page .qa-patterns{width:100%;max-width:1020px;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-inline:auto}
+.qa-page .qa-pattern-panel{position:static;width:auto;margin:0;grid-column:span 2;min-width:0}
+.qa-page .qa-pattern summary,.qa-page .qa-pattern[open] summary{transform:none;outline:none;box-shadow:none}
+.qa-page .qa-pattern summary:before,.qa-page .qa-pattern[open] summary:before{transform:none}
+.qa-page .qa-pattern:not([open]) summary:hover{transform:translateY(-2px)}
+.qa-page .qa-pattern:not([open]) summary:hover:before{transform:none}
+.qa-page .qa-pattern summary:focus-visible{outline:2px solid #152747;outline-offset:4px}
+.qa-page .qa-folder-shape>use{stroke:none}
+.qa-page .qa-pattern[open] summary>.qa-folder-shape{transform:none}
+@media(max-width:1200px){.qa-page .qa-patterns{max-width:680px;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.qa-page .qa-patterns{max-width:360px;grid-template-columns:minmax(0,1fr)}.qa-page .qa-pattern-panel{grid-column:1}}
+@media(prefers-reduced-motion:reduce){.qa-page .qa-pattern:not([open]) summary:hover{transform:none}}
+.qa-page .qa-folder-shape>use:last-child{fill:#fff}
+
+/* Use the full workspace for the research analysis desktop composition. */
+@media(min-width:1201px){
+  .content:has(> .qa-page){max-width:none}
+  .qa-page{max-width:none}
+  .qa-page .qa-intro,.qa-page .qa-section-copy,.qa-page .qa-risk{max-width:none}
+  .qa-page .qa-intro p,.qa-page .qa-section-copy p,.qa-page .qa-risk>p{max-width:none}
+  .qa-page .qa-patterns{max-width:none;grid-template-columns:repeat(4,minmax(0,1fr))}
+}
