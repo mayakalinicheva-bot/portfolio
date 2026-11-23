@@ -7,7 +7,8 @@ import json
 root = Path(__file__).resolve().parent
 public = root / "public"
 assets = (
-    "index.html", "styles.css", "model.js", "workspace.js",
+    "index.html", "styles.css", "model.js", "workspace.js", "hypotheses-graph.js",
+    "data/hypotheses-graph.json",
     "data/matrix.json", "data/discovery.json",
     "data/deploy1-matrix.json", "data/qualitative-analysis.json",
 )
