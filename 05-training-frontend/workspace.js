@@ -150,14 +150,13 @@ function qualitativeAnalysisView(){
   const evidence=p=>(p.quotes||[]).map(q=>'<figure class="qa-quote"><figcaption>'+esc(q.meta)+'</figcaption><blockquote>'+esc(q.text)+'</blockquote></figure>').join('')+(p.evidenceNotes?.length?'<div class="qa-evidence-notes">'+paragraphs(p.evidenceNotes)+'</div>':'');
   const patterns=data.patterns.map(p=>{
     const panel='qa-panel-'+p.id.toLowerCase();
-    const markup='<details class="qa-pattern" name="qa-patterns"><summary aria-expanded="false" aria-controls="'+panel+'"><span class="qa-folder-tab" aria-hidden="true"></span><span class="qa-pattern-id">'+esc(p.id)+'</span><b>'+esc(p.title)+'</b><span class="qa-folder-meta"><span>'+esc(p.evidenceType)+'</span><span>'+esc(p.strength)+'</span></span><span class="qa-folder-status">Анализ открыт под сеткой</span></summary><article hidden class="qa-pattern-panel" id="'+panel+'"><header><span class="qa-pattern-id">'+esc(p.id)+'</span><h3>'+esc(p.title)+'</h3><p>'+esc(p.lead)+'</p></header><section><h4>Суть паттерна</h4>'+paragraphs(p.essence)+'</section>'+(p.formation?'<section><h4>Как сформировался паттерн</h4><p>'+esc(p.formation)+'</p></section>':'')+'<section><h4>Evidence</h4>'+evidence(p)+'</section>'+(p.synthesis?'<section><h4>Cross-interview synthesis</h4><p>'+esc(p.synthesis)+'</p></section>':'')+'<div class="qa-evidence-meta"><div><span>Evidence type</span><strong>'+esc(p.evidenceType)+'</strong></div><div><span>Evidence strength</span><strong>'+esc(p.strength)+'</strong></div></div><section><h4>Hypothesis impact</h4><p>'+esc(p.hypothesis)+'</p></section><section><h4>Product impact</h4>'+list(p.product)+'</section><section><h4>Граница интерпретации</h4><p>'+esc(p.boundary)+'</p></section><section class="qa-conclusion"><h4>Итог</h4><p>'+esc(p.conclusion)+'</p></section></article></details>';
-    const [folder,detail]=markup.split('</summary>');
-    return [folder+'</summary></details>',detail.replace('</article></details>','</article>')];
+    const markup='<details class="qa-pattern" name="qa-patterns"><summary aria-expanded="false" aria-controls="'+panel+'"><svg class="qa-folder-shape" viewBox="0 0 400 380" preserveAspectRatio="none" aria-hidden="true"><path d="M 2,144 Q 2,110 36,110 H 151 Q 160,110 168,119 L 188,140 Q 193,145 201,145 H 364 Q 398,145 398,179 V 342 Q 398,378 362,378 H 38 Q 2,378 2,342 Z"/></svg><span class="qa-pattern-id">'+esc(p.id)+'</span><b>'+esc(p.title)+'</b><span class="qa-folder-meta"><span>'+esc(p.evidenceType)+'</span><span>'+esc(p.strength)+'</span></span></summary><article hidden class="qa-pattern-panel" id="'+panel+'"><header><span class="qa-pattern-id">'+esc(p.id)+'</span><h3>'+esc(p.title)+'</h3><p>'+esc(p.lead)+'</p></header><section><h4>Суть паттерна</h4>'+paragraphs(p.essence)+'</section>'+(p.formation?'<section><h4>Как сформировался паттерн</h4><p>'+esc(p.formation)+'</p></section>':'')+'<section><h4>Evidence</h4>'+evidence(p)+'</section>'+(p.synthesis?'<section><h4>Cross-interview synthesis</h4><p>'+esc(p.synthesis)+'</p></section>':'')+'<div class="qa-evidence-meta"><div><span>Evidence type</span><strong>'+esc(p.evidenceType)+'</strong></div><div><span>Evidence strength</span><strong>'+esc(p.strength)+'</strong></div></div><section><h4>Hypothesis impact</h4><p>'+esc(p.hypothesis)+'</p></section><section><h4>Product impact</h4>'+list(p.product)+'</section><section><h4>Граница интерпретации</h4><p>'+esc(p.boundary)+'</p></section><section class="qa-conclusion"><h4>Итог</h4><p>'+esc(p.conclusion)+'</p></section></article></details>';
+    return markup;
   });
   const pipeline=['Ответы респондентов','Исследовательские выводы','Кросс-интервью паттерны','Гипотезы','Продуктовые решения'];
   return '<div class="qa-page"><a class="text-link back-link" href="'+uri('researchHub')+'">'+icon('back')+'К разделу «Интервью»</a>'+heading('Анализ глубинных интервью','','','PORTFOLIO / RESEARCH')+
     '<section class="qa-intro"><h2>Анализ качественных интервью</h2><p>Анализ основан на 8 глубинных интервью и 120 вопросах: R01–R07 — независимые респонденты, SELF01 — отдельное self-interview автора исследования. Ответы анализировались по отдельным вопросам и тематическим блокам, после чего повторяющиеся наблюдения, проблемы, модели поведения и продуктовые ограничения были объединены в кросс-интервью паттерны CP-01–CP-14.</p><p>R01–R07 используются как основная независимая качественная выборка. SELF01 рассматривается отдельно и не используется для искусственного увеличения частоты наблюдений. При анализе различаются фактический опыт респондентов, предполагаемое будущее поведение и реакция на предложенную концепцию Portfolio.</p><p>Качественная выборка преимущественно описывает опыт студентов дизайн-направлений IThub СПб. Она позволяет глубоко исследовать эту часть основной аудитории, но не является равномерным представлением всех специальностей и курсов колледжа.</p></section>'+
-    '<section class="qa-section"><div class="qa-section-copy"><h2>Кросс-интервью паттерны CP-01–CP-14</h2><p>14 паттернов объединяют повторяющиеся проблемы, модели поведения, ценности и продуктовые ограничения, выявленные в разных блоках интервью. Каждый паттерн связан с исходными ответами и показывает его влияние на гипотезы, продуктовые решения и требования Portfolio.</p></div><div class="qa-pipeline" aria-label="Research pipeline">'+pipeline.map((item,index)=>'<span>'+esc(item)+(index<pipeline.length-1?'<i aria-hidden="true">→</i>':'')+'</span>').join('')+'</div><div class="qa-patterns">'+patterns.map(p=>p[0]).join('')+'</div><div class="qa-details">'+patterns.map(p=>p[1]).join('')+'</div></section>'+
+    '<section class="qa-section"><div class="qa-section-copy"><h2>Кросс-интервью паттерны CP-01–CP-14</h2><p>14 паттернов объединяют повторяющиеся проблемы, модели поведения, ценности и продуктовые ограничения, выявленные в разных блоках интервью. Каждый паттерн связан с исходными ответами и показывает его влияние на гипотезы, продуктовые решения и требования Portfolio.</p></div><div class="qa-pipeline" aria-label="Research pipeline">'+pipeline.map((item,index)=>'<span>'+esc(item)+(index<pipeline.length-1?'<i aria-hidden="true">→</i>':'')+'</span>').join('')+'</div><div class="qa-patterns">'+patterns.join('')+'</div></section>'+
     '<section class="qa-risk"><span class="eyebrow">PRODUCT RISK</span><h2>Ключевой риск после интервью</h2><h3>'+esc(data.risk.title)+'</h3>'+paragraphs(data.risk.text)+'<div class="qa-risk-chain" aria-label="Launch-risk model">'+data.risk.chain.map((item,index)=>'<span>'+esc(item)+(index<data.risk.chain.length-1?'<i aria-hidden="true">→</i>':'')+'</span>').join('')+'</div><small>Launch-risk model, а не доказанная причинная модель.</small></section></div>';
 }
 
@@ -297,8 +296,25 @@ document.addEventListener('toggle',event=>{
   const panel=document.getElementById(trigger?.getAttribute('aria-controls'));
   if(panel)panel.hidden=!current.open;
   if(!current.open)return;
+  positionQualitativePanel(current);
   document.querySelectorAll('.qa-pattern[open]').forEach(other=>{if(other!==current)other.open=false;});
 },true);
+
+function positionQualitativePanel(pattern){
+  const grid=pattern.closest('.qa-patterns').getBoundingClientRect();
+  const anchor=pattern.querySelector('summary').getBoundingClientRect();
+  const panel=pattern.querySelector('.qa-pattern-panel');
+  const width=Math.min(860,grid.width);
+  const left=Math.max(grid.left,Math.min(anchor.left+(anchor.width-width)/2,grid.right-width));
+  panel.style.width=width+'px';
+  panel.style.marginLeft=(left-anchor.left)+'px';
+  panel.style.setProperty('--anchor-left',(anchor.left-left)+'px');
+  panel.style.setProperty('--anchor-width',anchor.width+'px');
+}
+window.addEventListener('resize',()=>{
+  const pattern=document.querySelector('.qa-page .qa-pattern[open]');
+  if(pattern)positionQualitativePanel(pattern);
+});
 
 function closeQualitativePattern(pattern,restoreFocus=false){
   const trigger=pattern.querySelector(':scope > summary');
