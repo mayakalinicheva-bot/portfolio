@@ -153,10 +153,10 @@ function qualitativeAnalysisView(){
     return '<details class="qa-pattern" name="qa-patterns"><summary aria-expanded="false" aria-controls="'+panel+'"><span class="qa-folder-tab" aria-hidden="true"></span><span class="qa-pattern-id">'+esc(p.id)+'</span><b>'+esc(p.title)+'</b></summary><article class="qa-pattern-panel" id="'+panel+'"><header><span class="qa-pattern-id">'+esc(p.id)+'</span><h3>'+esc(p.title)+'</h3><p>'+esc(p.lead)+'</p></header><section><h4>Суть паттерна</h4>'+paragraphs(p.essence)+'</section>'+(p.formation?'<section><h4>Как сформировался паттерн</h4><p>'+esc(p.formation)+'</p></section>':'')+'<section><h4>Evidence</h4>'+evidence(p)+'</section>'+(p.synthesis?'<section><h4>Cross-interview synthesis</h4><p>'+esc(p.synthesis)+'</p></section>':'')+'<div class="qa-evidence-meta"><div><span>Evidence type</span><strong>'+esc(p.evidenceType)+'</strong></div><div><span>Evidence strength</span><strong>'+esc(p.strength)+'</strong></div></div><section><h4>Hypothesis impact</h4><p>'+esc(p.hypothesis)+'</p></section><section><h4>Product impact</h4>'+list(p.product)+'</section><section><h4>Граница интерпретации</h4><p>'+esc(p.boundary)+'</p></section><section class="qa-conclusion"><h4>Итог</h4><p>'+esc(p.conclusion)+'</p></section></article></details>';
   }).join('');
   const pipeline=['Ответы респондентов','Исследовательские выводы','Кросс-интервью паттерны','Гипотезы','Продуктовые решения'];
-  return '<a class="text-link back-link" href="'+uri('researchHub')+'">'+icon('back')+'К разделу «Интервью»</a>'+heading('Анализ глубинных интервью','','','PORTFOLIO / RESEARCH')+
+  return '<div class="qa-page"><a class="text-link back-link" href="'+uri('researchHub')+'">'+icon('back')+'К разделу «Интервью»</a>'+heading('Анализ глубинных интервью','','','PORTFOLIO / RESEARCH')+
     '<section class="qa-intro"><h2>Анализ качественных интервью</h2><p>Анализ основан на 8 глубинных интервью и 120 вопросах: R01–R07 — независимые респонденты, SELF01 — отдельное self-interview автора исследования. Ответы анализировались по отдельным вопросам и тематическим блокам, после чего повторяющиеся наблюдения, проблемы, модели поведения и продуктовые ограничения были объединены в кросс-интервью паттерны CP-01–CP-14.</p><p>R01–R07 используются как основная независимая качественная выборка. SELF01 рассматривается отдельно и не используется для искусственного увеличения частоты наблюдений. При анализе различаются фактический опыт респондентов, предполагаемое будущее поведение и реакция на предложенную концепцию Portfolio.</p><p>Качественная выборка преимущественно описывает опыт студентов дизайн-направлений IThub СПб. Она позволяет глубоко исследовать эту часть основной аудитории, но не является равномерным представлением всех специальностей и курсов колледжа.</p></section>'+
     '<section class="qa-section"><div class="qa-section-copy"><h2>Кросс-интервью паттерны CP-01–CP-14</h2><p>14 паттернов объединяют повторяющиеся проблемы, модели поведения, ценности и продуктовые ограничения, выявленные в разных блоках интервью. Каждый паттерн связан с исходными ответами и показывает его влияние на гипотезы, продуктовые решения и требования Portfolio.</p></div><div class="qa-pipeline" aria-label="Research pipeline">'+pipeline.map((item,index)=>'<span>'+esc(item)+(index<pipeline.length-1?'<i aria-hidden="true">→</i>':'')+'</span>').join('')+'</div><div class="qa-patterns">'+patterns+'</div></section>'+
-    '<section class="qa-risk"><span class="eyebrow">PRODUCT RISK</span><h2>Ключевой риск после интервью</h2><h3>'+esc(data.risk.title)+'</h3>'+paragraphs(data.risk.text)+'<div class="qa-risk-chain" aria-label="Launch-risk model">'+data.risk.chain.map((item,index)=>'<span>'+esc(item)+(index<data.risk.chain.length-1?'<i aria-hidden="true">→</i>':'')+'</span>').join('')+'</div><small>Launch-risk model, а не доказанная причинная модель.</small></section>';
+    '<section class="qa-risk"><span class="eyebrow">PRODUCT RISK</span><h2>Ключевой риск после интервью</h2><h3>'+esc(data.risk.title)+'</h3>'+paragraphs(data.risk.text)+'<div class="qa-risk-chain" aria-label="Launch-risk model">'+data.risk.chain.map((item,index)=>'<span>'+esc(item)+(index<data.risk.chain.length-1?'<i aria-hidden="true">→</i>':'')+'</span>').join('')+'</div><small>Launch-risk model, а не доказанная причинная модель.</small></section></div>';
 }
 
 async function saveResearchPlan(){
@@ -298,6 +298,33 @@ document.addEventListener('toggle',event=>{
   const shift=current.getBoundingClientRect().top-top;
   if(Math.abs(shift)>1)window.scrollBy({top:shift,left:0,behavior:'auto'});
 },true);
+
+function closeQualitativePattern(pattern,restoreFocus=false){
+  const trigger=pattern.querySelector(':scope > summary');
+  pattern.open=false;
+  trigger?.setAttribute('aria-expanded','false');
+  if(restoreFocus)trigger?.focus({preventScroll:true});
+  requestAnimationFrame(()=>{
+    if(!pattern.isConnected)return;
+    const rect=trigger.getBoundingClientRect();
+    if(rect.bottom<0||rect.top>window.innerHeight){
+      trigger.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    }
+  });
+}
+document.addEventListener('click',event=>{
+  if(route.kind!=='researchAnalysis'||!event.target.closest)return;
+  const pattern=document.querySelector('.qa-page .qa-pattern[open]');
+  if(!pattern||window.getSelection()?.toString().trim())return;
+  if(event.target.closest('a,button,input,textarea,select,option,[contenteditable]:not([contenteditable="false"]),[role="button"],[role="link"],[role="checkbox"],[role="switch"],[role="textbox"],[role="combobox"],[role="menuitem"]'))return;
+  if(event.target.closest('.qa-pattern summary'))return;
+  closeQualitativePattern(pattern);
+});
+document.addEventListener('keydown',event=>{
+  if(route.kind!=='researchAnalysis'||event.key!=='Escape'||event.defaultPrevented)return;
+  const pattern=document.querySelector('.qa-page .qa-pattern[open]');
+  if(pattern&&!event.target.closest('dialog,[role="dialog"]')){event.preventDefault();closeQualitativePattern(pattern,true);}
+});
 
 document.addEventListener('click',event=>{
   const el=event.target.closest('[data-action]');if(!el){if(event.target.closest('#dialog a'))closeDialog();if(event.target.closest('.nav-link'))$('#sidebar').classList.remove('open');return;}
