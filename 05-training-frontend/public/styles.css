@@ -168,3 +168,18 @@ dialog{border:1px solid var(--line);border-radius:18px;padding:0;max-height:85vh
   .qa-page .qa-intro p,.qa-page .qa-section-copy p,.qa-page .qa-risk>p{max-width:none}
   .qa-page .qa-patterns{max-width:none;grid-template-columns:repeat(4,minmax(0,1fr))}
 }
+
+/* Desktop selection changes only the pattern area. */
+@media(min-width:1201px){
+  .qa-page .qa-patterns.qa-split{grid-template-columns:minmax(240px,27fr) minmax(0,73fr);gap:32px;align-items:start}
+  .qa-split-nav{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;min-width:0;animation:qa-detail-appear .22s ease-out both}
+  .qa-split-pane{min-width:0}
+  .qa-page .qa-split-nav .qa-pattern summary,.qa-page .qa-split-nav .qa-pattern[open] summary{aspect-ratio:1.65;padding:6% 7% 5%}
+  .qa-page .qa-split-nav .qa-pattern summary>b{top:34%;font-size:clamp(12px,1vw,14px)}
+  .qa-page .qa-split-nav .qa-folder-meta{font-size:9px}
+  .qa-page .qa-split-nav .qa-pattern[open] summary{filter:brightness(1.08)}
+  .qa-page .qa-split-pane .qa-pattern-panel{width:100%;margin:0;padding:32px clamp(24px,3vw,48px);border:0;background:transparent;animation:qa-detail-appear .22s ease-out both}
+  .qa-page .qa-split-pane .qa-pattern-panel>header,.qa-page .qa-split-pane .qa-pattern-panel>section,.qa-page .qa-split-pane .qa-pattern-panel>.qa-evidence-meta{max-width:none;margin-left:0;margin-right:0}
+  .qa-page .qa-split-pane .qa-pattern-panel p,.qa-page .qa-split-pane .qa-pattern-panel li,.qa-page .qa-split-pane blockquote{max-width:78ch}
+}
+@media(prefers-reduced-motion:reduce){.qa-page .qa-split-nav,.qa-page .qa-split-pane .qa-pattern-panel{animation:none}}

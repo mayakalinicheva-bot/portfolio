@@ -305,9 +305,14 @@ document.addEventListener('toggle',event=>{
   trigger?.setAttribute('aria-expanded',String(current.open));
   const panel=document.getElementById(trigger?.getAttribute('aria-controls'));
   if(panel)panel.hidden=!current.open;
-  if(!current.open)return;
-  positionQualitativePanel(current);
-  document.querySelectorAll('.qa-pattern[open]').forEach(other=>{if(other!==current)other.open=false;});
+  const grid=current.closest('.qa-patterns');
+  if(current.open){
+    document.querySelectorAll('.qa-pattern[open]').forEach(other=>{if(other!==current)other.open=false;});
+    if(matchMedia('(min-width:1201px)').matches)showQualitativeSplit(grid);
+    else positionQualitativePanel(current);
+  }else if(grid?.classList.contains('qa-split')){
+    requestAnimationFrame(()=>{if(grid.isConnected&&!grid.querySelector('.qa-pattern[open]'))restoreQualitativeGrid(grid);});
+  }
 },true);
 
 function initQualitativePanels(){
@@ -315,6 +320,37 @@ function initQualitativePanels(){
     const panel=pattern.querySelector('.qa-pattern-panel');
     if(panel)pattern.after(panel);
   });
+}
+function showQualitativeSplit(grid){
+  if(grid.classList.contains('qa-split'))return;
+  const focused=document.activeElement;
+  const patterns=Array.from(grid.querySelectorAll(':scope > .qa-pattern'));
+  const nav=document.createElement('div');
+  const pane=document.createElement('div');
+  nav.className='qa-split-nav';
+  pane.className='qa-split-pane';
+  patterns.forEach(pattern=>{
+    const panel=document.getElementById(pattern.querySelector('summary').getAttribute('aria-controls'));
+    nav.append(pattern);
+    if(panel){panel.style.gridColumn='';pane.append(panel);}
+  });
+  grid.append(nav,pane);
+  grid.classList.add('qa-split');
+  if(focused?.matches('.qa-pattern summary'))focused.focus({preventScroll:true});
+}
+function restoreQualitativeGrid(grid){
+  if(!grid.classList.contains('qa-split'))return;
+  const focused=document.activeElement;
+  const patterns=Array.from(grid.querySelectorAll('.qa-split-nav > .qa-pattern'));
+  patterns.forEach(pattern=>{
+    const panel=document.getElementById(pattern.querySelector('summary').getAttribute('aria-controls'));
+    grid.append(pattern);
+    if(panel)grid.append(panel);
+  });
+  grid.querySelector('.qa-split-nav')?.remove();
+  grid.querySelector('.qa-split-pane')?.remove();
+  grid.classList.remove('qa-split');
+  if(focused?.matches('.qa-pattern summary'))focused.focus({preventScroll:true});
 }
 function positionQualitativePanel(pattern){
   const grid=pattern.closest('.qa-patterns');
@@ -328,8 +364,11 @@ function positionQualitativePanel(pattern){
   panel.style.gridColumn=columns===1?'1':columns===2?'1 / span 2':(index%columns<2?'1 / span 2':'3 / span 2');
 }
 window.addEventListener('resize',()=>{
-  const pattern=document.querySelector('.qa-page .qa-pattern[open]');
-  if(pattern)positionQualitativePanel(pattern);
+  const grid=document.querySelector('.qa-page .qa-patterns');
+  const pattern=grid?.querySelector('.qa-pattern[open]');
+  if(!grid||!pattern)return;
+  if(matchMedia('(min-width:1201px)').matches)showQualitativeSplit(grid);
+  else{restoreQualitativeGrid(grid);positionQualitativePanel(pattern);}
 });
 
 function closeQualitativePattern(pattern,restoreFocus=false){
@@ -353,6 +392,7 @@ document.addEventListener('click',event=>{
   if(!pattern||window.getSelection()?.toString().trim())return;
   if(event.target.closest('a,button,input,textarea,select,option,[contenteditable]:not([contenteditable="false"]),[role="button"],[role="link"],[role="checkbox"],[role="switch"],[role="textbox"],[role="combobox"],[role="menuitem"]'))return;
   if(event.target.closest('.qa-pattern summary'))return;
+  if(matchMedia('(min-width:1201px)').matches&&event.target.closest('.qa-split-pane'))return;
   closeQualitativePattern(pattern);
 });
 document.addEventListener('keydown',event=>{
