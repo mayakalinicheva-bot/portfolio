@@ -150,7 +150,7 @@ function qualitativeAnalysisView(){
   const evidence=p=>(p.quotes||[]).map(q=>'<figure class="qa-quote"><figcaption>'+esc(q.meta)+'</figcaption><blockquote>'+esc(q.text)+'</blockquote></figure>').join('')+(p.evidenceNotes?.length?'<div class="qa-evidence-notes">'+paragraphs(p.evidenceNotes)+'</div>':'');
   const patterns=data.patterns.map(p=>{
     const panel='qa-panel-'+p.id.toLowerCase();
-    const markup='<details class="qa-pattern" name="qa-patterns"><summary aria-expanded="false" aria-controls="'+panel+'"><svg class="qa-folder-shape" viewBox="0 0 400 380" preserveAspectRatio="none" aria-hidden="true"><path d="M 2,144 Q 2,110 36,110 H 151 Q 160,110 168,119 L 188,140 Q 193,145 201,145 H 364 Q 398,145 398,179 V 342 Q 398,378 362,378 H 38 Q 2,378 2,342 Z"/></svg><span class="qa-pattern-id">'+esc(p.id)+'</span><b>'+esc(p.title)+'</b><span class="qa-folder-meta"><span>'+esc(p.evidenceType)+'</span><span>'+esc(p.strength)+'</span></span></summary><article hidden class="qa-pattern-panel" id="'+panel+'"><header><span class="qa-pattern-id">'+esc(p.id)+'</span><h3>'+esc(p.title)+'</h3><p>'+esc(p.lead)+'</p></header><section><h4>Суть паттерна</h4>'+paragraphs(p.essence)+'</section>'+(p.formation?'<section><h4>Как сформировался паттерн</h4><p>'+esc(p.formation)+'</p></section>':'')+'<section><h4>Evidence</h4>'+evidence(p)+'</section>'+(p.synthesis?'<section><h4>Cross-interview synthesis</h4><p>'+esc(p.synthesis)+'</p></section>':'')+'<div class="qa-evidence-meta"><div><span>Evidence type</span><strong>'+esc(p.evidenceType)+'</strong></div><div><span>Evidence strength</span><strong>'+esc(p.strength)+'</strong></div></div><section><h4>Hypothesis impact</h4><p>'+esc(p.hypothesis)+'</p></section><section><h4>Product impact</h4>'+list(p.product)+'</section><section><h4>Граница интерпретации</h4><p>'+esc(p.boundary)+'</p></section><section class="qa-conclusion"><h4>Итог</h4><p>'+esc(p.conclusion)+'</p></section></article></details>';
+    const markup='<details class="qa-pattern" name="qa-patterns"><summary aria-expanded="false" aria-controls="'+panel+'"><svg class="qa-folder-shape" viewBox="0 0 400 380" preserveAspectRatio="none" aria-hidden="true"><defs><path id="'+panel+'-shape" d="M 0,106 Q 0,76 31,76 H 151 Q 160,76 168,85 L 188,106 Q 193,111 201,111 H 369 Q 400,111 400,141 V 349 Q 400,380 369,380 H 31 Q 0,380 0,349 Z"/><clipPath id="'+panel+'-clip"><use href="#'+panel+'-shape"/></clipPath></defs><use href="#'+panel+'-shape" clip-path="url(#'+panel+'-clip)"/></svg><span class="qa-pattern-id">'+esc(p.id)+'</span><b>'+esc(p.title)+'</b><span class="qa-folder-meta"><span>'+esc(p.evidenceType)+'</span><span>'+esc(p.strength)+'</span></span></summary><article hidden class="qa-pattern-panel" id="'+panel+'"><header><span class="qa-pattern-id">'+esc(p.id)+'</span><h3>'+esc(p.title)+'</h3><p>'+esc(p.lead)+'</p></header><section><h4>Суть паттерна</h4>'+paragraphs(p.essence)+'</section>'+(p.formation?'<section><h4>Как сформировался паттерн</h4><p>'+esc(p.formation)+'</p></section>':'')+'<section><h4>Evidence</h4>'+evidence(p)+'</section>'+(p.synthesis?'<section><h4>Cross-interview synthesis</h4><p>'+esc(p.synthesis)+'</p></section>':'')+'<div class="qa-evidence-meta"><div><span>Evidence type</span><strong>'+esc(p.evidenceType)+'</strong></div><div><span>Evidence strength</span><strong>'+esc(p.strength)+'</strong></div></div><section><h4>Hypothesis impact</h4><p>'+esc(p.hypothesis)+'</p></section><section><h4>Product impact</h4>'+list(p.product)+'</section><section><h4>Граница интерпретации</h4><p>'+esc(p.boundary)+'</p></section><section class="qa-conclusion"><h4>Итог</h4><p>'+esc(p.conclusion)+'</p></section></article></details>';
     return markup;
   });
   const pipeline=['Ответы респондентов','Исследовательские выводы','Кросс-интервью паттерны','Гипотезы','Продуктовые решения'];
@@ -304,12 +304,12 @@ function positionQualitativePanel(pattern){
   const grid=pattern.closest('.qa-patterns').getBoundingClientRect();
   const anchor=pattern.querySelector('summary').getBoundingClientRect();
   const panel=pattern.querySelector('.qa-pattern-panel');
-  const width=Math.min(860,grid.width);
-  const left=Math.max(grid.left,Math.min(anchor.left+(anchor.width-width)/2,grid.right-width));
+  const gap=parseFloat(getComputedStyle(pattern.parentElement).columnGap)||0;
+  const columns=getComputedStyle(pattern.parentElement).gridTemplateColumns.split(' ').length;
+  const width=columns>1?anchor.width*2+gap:anchor.width;
+  const left=Math.min(anchor.left,grid.right-width);
   panel.style.width=width+'px';
   panel.style.marginLeft=(left-anchor.left)+'px';
-  panel.style.setProperty('--anchor-left',(anchor.left-left)+'px');
-  panel.style.setProperty('--anchor-width',anchor.width+'px');
 }
 window.addEventListener('resize',()=>{
   const pattern=document.querySelector('.qa-page .qa-pattern[open]');

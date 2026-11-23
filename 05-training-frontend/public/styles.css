@@ -96,7 +96,7 @@ dialog{border:1px solid var(--line);border-radius:18px;padding:0;max-height:85vh
 .qa-page .qa-pattern summary:before,.qa-page .qa-pattern[open] summary:before{border-radius:32px;background:#102b78;transform:none}
 .qa-page .qa-pattern summary:after{display:none}
 .qa-page .qa-folder-shape{position:absolute;inset:0;width:100%;height:100%;z-index:-1;overflow:visible;transition:transform .2s ease}
-.qa-page .qa-folder-shape path{fill:var(--blue);stroke:#ffffff45;stroke-width:1;vector-effect:non-scaling-stroke}
+
 .qa-page .qa-pattern summary .qa-pattern-id{font-family:inherit;font-size:12px;color:#d5dfff;font-weight:400}
 .qa-page .qa-pattern summary>b{position:absolute;top:40%;left:7%;right:7%;font-size:clamp(14px,1.35vw,18px);line-height:1.35;font-weight:500}
 .qa-page .qa-folder-meta{padding:0;font-size:11px;align-items:flex-end;min-height:30px}
@@ -109,3 +109,22 @@ dialog{border:1px solid var(--line);border-radius:18px;padding:0;max-height:85vh
 .qa-page .qa-pattern-panel>header .qa-pattern-id,.qa-page .qa-quote figcaption{font-size:12px}
 @media(max-width:620px){.qa-page .qa-pattern summary>b{font-size:18px}.qa-page .qa-pattern-panel{border-radius:0 0 24px 24px}}
 @media(prefers-reduced-motion:reduce){.qa-page .qa-folder-shape{transition:none}}
+/* Compact navigation folders and column-aligned research documents. */
+.qa-page .qa-patterns{max-width:780px;gap:18px}
+.qa-page .qa-pattern summary,.qa-page .qa-pattern[open] summary{aspect-ratio:1.35;padding:7% 7% 6%;border-radius:22px;background:transparent;box-shadow:none;overflow:hidden}
+.qa-page .qa-pattern summary:before,.qa-page .qa-pattern[open] summary:before{inset:0 0 45%;border-radius:22px 22px 0 0;background:#102b78}
+.qa-page .qa-folder-shape>use{fill:var(--blue);stroke:#ffffff33;stroke-width:2;vector-effect:non-scaling-stroke}
+.qa-page .qa-pattern[open] .qa-folder-shape{transform:none}
+.qa-page .qa-pattern summary .qa-pattern-id{font-size:10px;line-height:1.2}
+.qa-page .qa-pattern summary>b{top:32%;font-size:13px;font-weight:500;line-height:1.22}
+.qa-page .qa-folder-meta{font-size:9px;line-height:1.2;gap:8px;min-height:0}
+.qa-page .qa-pattern:not([open]) summary:hover{box-shadow:none}
+.qa-page .qa-pattern-panel{margin-top:10px;border-radius:20px;padding:24px;box-shadow:none}
+.qa-page .qa-pattern-panel:before{display:none}
+.qa-page .qa-pattern-panel h3{font-size:28px;line-height:1.18;font-weight:600}
+.qa-page .qa-pattern-panel h4{font-size:18px}
+.qa-page .qa-pattern-panel>header{display:block;padding-bottom:18px}
+.qa-page .qa-pattern-panel section{margin-top:20px}
+.qa-page .qa-pattern-panel header p{font-size:15px}
+@media(max-width:1100px){.qa-page .qa-patterns{max-width:560px}}
+@media(max-width:620px){.qa-page .qa-patterns{max-width:360px}.qa-page .qa-pattern summary>b{font-size:14px}.qa-page .qa-pattern-panel{padding:22px 18px}.qa-page .qa-pattern-panel h3{font-size:26px}}
