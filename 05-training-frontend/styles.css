@@ -208,3 +208,5 @@ dialog{border:1px solid var(--line);border-radius:18px;padding:0;max-height:85vh
 .hg-node.hg-grey .hg-survey-marker{fill:#e6b520;stroke:#fff;stroke-width:2}
 
 .hg-edge.hg-shared-active{stroke:#8454ce}
+
+.hg-node.hg-blue .hg-evidence-marker{fill:#e6b520;stroke:#fff;stroke-width:2}
