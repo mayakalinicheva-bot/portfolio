@@ -206,3 +206,5 @@ dialog{border:1px solid var(--line);border-radius:18px;padding:0;max-height:85vh
 /* Shared identity and survey state remain distinct from evidence colours. */
 .hg-node .hg-shared-ring,.hg-node.hg-blue .hg-shared-ring,.hg-node.hg-green .hg-shared-ring,.hg-node.hg-red .hg-shared-ring,.hg-node.hg-grey .hg-shared-ring{fill:none;stroke:#8454ce;stroke-width:2.5;opacity:0;pointer-events:none}.hg-node.hg-shared .hg-shared-ring{opacity:1}.hg-node .hg-survey-marker{fill:#e6b520;stroke:#fff;stroke-width:2;pointer-events:auto}.hg-dot.shared{background:#8454ce}.hg-dot.survey{background:#e6b520}
 .hg-node.hg-grey .hg-survey-marker{fill:#e6b520;stroke:#fff;stroke-width:2}
+
+.hg-edge.hg-shared-active{stroke:#8454ce}
